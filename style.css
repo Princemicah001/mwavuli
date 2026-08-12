@@ -542,14 +542,14 @@ nav {
 
 .lightbox img,
 .lightbox video {
-    max-width: 92vw;
-    max-height: 88vh;
+    max-width: 98vw;
+    max-height: 96vh;
     width: auto;
     height: auto;
-    object-fit: contain; /* Preserves 9:16 portrait and 16:9 landscape aspect ratio */
-    border-radius: 12px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 255, 255, 0.05);
-    transform: scale(0.96);
+    object-fit: contain; /* Full natural image size within viewport bounds */
+    border-radius: 0; /* Zero border radius for sharp edge-to-edge clarity */
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+    transform: scale(0.98);
     transition: transform 0.25s var(--ease);
     -webkit-user-select: none;
     user-select: none;
@@ -1159,7 +1159,8 @@ footer {
     .book-now-fab { bottom: 18px; right: 18px; max-width: calc(100% - 32px); transform-origin: bottom right; padding: 14px 22px; font-size: 14px; font-weight: 700; gap: 10px; }
     .book-now-fab i { font-size: 16px; }
 
-    .lightbox img { max-width: 95vw; max-height: 75vh; border-radius: 14px; }
+    .lightbox img,
+    .lightbox video { max-width: 98vw; max-height: 94vh; border-radius: 0; }
     .lightbox-close { top: 12px; right: 12px; width: 40px; height: 40px; font-size: 22px; }
     .lightbox-nav { width: 42px; height: 42px; font-size: 16px; }
     .lightbox-prev { left: 8px; }
