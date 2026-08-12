@@ -869,25 +869,50 @@
         lightbox.addEventListener("click", (e) => { if (e.target === lightbox) close(); });
     })();
 
-    // Floating WhatsApp FAB with Popup Audio Sound
+    // Floating WhatsApp FAB with Guaranteed Popup Audio Sound
     function initBookNowFab() {
         const fab = document.getElementById("bookNowFab");
         const hero = document.getElementById("home");
         if (!fab || !hero) return;
 
         let soundPlayed = false;
+        let audioUnlocked = false;
         const popupAudio = new Audio("assets/audio/popup.mp3");
         popupAudio.preload = "auto";
 
+        // Global user interaction audio unlocker to bypass strict browser autoplay blocks
+        function unlockAudio() {
+            if (audioUnlocked) return;
+            popupAudio.play().then(() => {
+                popupAudio.pause();
+                popupAudio.currentTime = 0;
+                audioUnlocked = true;
+            }).catch(() => {});
+        }
+
+        window.addEventListener("pointerdown", unlockAudio, { passive: true });
+        window.addEventListener("touchstart", unlockAudio, { passive: true });
+        window.addEventListener("scroll", unlockAudio, { passive: true });
+
         function triggerPopSound() {
+            // First attempt MP3 playback
+            let mp3Success = false;
             try {
                 popupAudio.currentTime = 0;
-                popupAudio.play().catch(() => {
-                    playSynthPop();
-                });
+                const promise = popupAudio.play();
+                if (promise !== undefined) {
+                    promise.then(() => {
+                        mp3Success = true;
+                    }).catch(() => {
+                        playSynthPop();
+                    });
+                }
             } catch (e) {
                 playSynthPop();
             }
+
+            // Always trigger synth bubble pop as immediate audio guarantee
+            playSynthPop();
         }
 
         function playSynthPop() {
@@ -895,21 +920,24 @@
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
                 if (!AudioCtx) return;
                 const ctx = new AudioCtx();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
 
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(320, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(750, ctx.currentTime + 0.09);
+                osc.frequency.setValueAtTime(340, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(820, ctx.currentTime + 0.1);
 
-                gain.gain.setValueAtTime(0.35, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.09);
+                gain.gain.setValueAtTime(0.4, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
 
                 osc.connect(gain);
                 gain.connect(ctx.destination);
 
-                osc.start();
-                osc.stop(ctx.currentTime + 0.09);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.1);
             } catch (e) {}
         }
 
