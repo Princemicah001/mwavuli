@@ -191,10 +191,12 @@ if (projectCollectionsEl || generalGallery) {
         }
 
         const images = generalGallery.querySelectorAll(".gallery-item img");
+        const fullUrls = Array.from(images).map(i => i.dataset.full || i.src);
+        if (window.preloadLightboxSources) window.preloadLightboxSources(fullUrls);
+
         images.forEach((img, idx) => {
             img.addEventListener("click", () => {
-                const srcArray = Array.from(images).map(i => i.dataset.full || i.src);
-                window.openLightbox(srcArray, idx);
+                window.openLightbox(fullUrls, idx);
             });
         });
 

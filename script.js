@@ -782,6 +782,7 @@
     }
 
     // Lightbox integration
+    // Lightbox integration - Zero latency preloading & aspect ratio preservation
     (function initLightbox() {
         const lightbox = document.getElementById("lightbox");
         const lightboxImg = document.getElementById("lightbox-img");
@@ -792,14 +793,41 @@
 
         let sources = [];
         let currentIndex = 0;
+        const memoryCache = new Map();
+
+        function preload(url) {
+            if (!url || memoryCache.has(url) || /\.(mp4|mov|webm|ogv|m4v)(\?.*)?$/i.test(url)) return;
+            const img = new Image();
+            img.decoding = "async";
+            img.src = url;
+            memoryCache.set(url, img);
+        }
+
+        window.preloadLightboxSources = function (urls) {
+            if (Array.isArray(urls)) urls.forEach(preload);
+        };
 
         window.openLightbox = function (imgs, idx = 0) {
+            if (!imgs || !imgs.length) return;
             sources = imgs;
             currentIndex = idx;
-            if (lightboxImg) lightboxImg.src = sources[currentIndex];
+            sources.forEach(preload); // Warm memory cache for all preview items immediately
+
+            if (lightboxImg) {
+                lightboxImg.src = sources[currentIndex];
+            }
             lightbox.classList.add("active");
             document.body.style.overflow = "hidden";
         };
+
+        function showCurrent() {
+            if (!lightboxImg || !sources.length) return;
+            lightboxImg.src = sources[currentIndex];
+            const nextIdx = (currentIndex + 1) % sources.length;
+            const prevIdx = (currentIndex - 1 + sources.length) % sources.length;
+            preload(sources[nextIdx]);
+            preload(sources[prevIdx]);
+        }
 
         function close() {
             lightbox.classList.remove("active");
@@ -810,13 +838,27 @@
         if (prevBtn) prevBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             currentIndex = (currentIndex - 1 + sources.length) % sources.length;
-            lightboxImg.src = sources[currentIndex];
+            showCurrent();
         });
         if (nextBtn) nextBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             currentIndex = (currentIndex + 1) % sources.length;
-            lightboxImg.src = sources[currentIndex];
+            showCurrent();
         });
+
+        document.addEventListener("keydown", (e) => {
+            if (!lightbox.classList.contains("active")) return;
+            if (e.key === "Escape") close();
+            if (e.key === "ArrowLeft") {
+                currentIndex = (currentIndex - 1 + sources.length) % sources.length;
+                showCurrent();
+            }
+            if (e.key === "ArrowRight") {
+                currentIndex = (currentIndex + 1) % sources.length;
+                showCurrent();
+            }
+        });
+
         lightbox.addEventListener("click", (e) => { if (e.target === lightbox) close(); });
     })();
 
