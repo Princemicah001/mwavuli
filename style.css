@@ -4,18 +4,23 @@
    ========================================================================== */
 
 :root {
-    --bg-color: #F7F7F9; /* Clean off-white */
+    --bg-color: #F8F9FC; /* Crisp, high-visibility solid off-white */
     --surface-color: #FFFFFF;
-    --text-main: #111111;
-    --text-muted: #666666;
-    --accent: #000000;
-    --purple-dot: #8b5cf6;
+    --text-main: #0F172A; /* Deep high-contrast obsidian slate */
+    --text-muted: #475569; /* Crisp, readable slate gray */
+    --accent: #0F172A;
+    --purple-dot: #7C3AED;
+    --border-color: #E2E8F0;
+    --border-hover: #C084FC;
     --radius-img: 24px;
-    --radius-card: 20px;
+    --radius-card: 22px;
     --radius-btn: 9999px; /* Pill shape */
     --max-width: 1400px;
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
     --spring: cubic-bezier(0.25, 1, 0.5, 1);
+    --font-main: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+    --font-heading: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+    --font-accent: 'Caveat', cursive;
 }
 
 * {
@@ -38,13 +43,11 @@ body {
     padding: 0;
     overflow-x: hidden !important;
     position: relative;
-    font-family: 'Poppins', sans-serif;
-    background-color: #F8F8FC;
+    font-family: var(--font-main);
+    background-color: #F8F9FC;
     background-image: 
-        radial-gradient(at 10% 12%, rgba(251, 207, 232, 0.45) 0px, transparent 50%),
-        radial-gradient(at 88% 22%, rgba(221, 214, 254, 0.45) 0px, transparent 50%),
-        radial-gradient(at 50% 55%, rgba(254, 243, 199, 0.35) 0px, transparent 50%),
-        radial-gradient(at 85% 88%, rgba(199, 210, 254, 0.35) 0px, transparent 50%);
+        radial-gradient(at 15% 10%, rgba(221, 214, 254, 0.2) 0px, transparent 40%),
+        radial-gradient(at 85% 25%, rgba(251, 207, 232, 0.2) 0px, transparent 40%);
     background-attachment: fixed;
     color: var(--text-main);
     line-height: 1.6;
@@ -154,27 +157,33 @@ nav {
 }
 
 .hero-text h1 {
+    font-family: var(--font-heading);
     font-size: clamp(38px, 5.5vw, 62px);
     font-weight: 800;
-    line-height: 1.15;
-    letter-spacing: -1.5px;
+    line-height: 1.12;
+    letter-spacing: -0.035em;
     margin-bottom: 20px;
     color: var(--text-main);
+    background: linear-gradient(135deg, #0F172A 0%, #334155 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .highlight-handwritten {
-    font-family: 'Caveat', cursive;
+    font-family: var(--font-accent);
     font-size: 1.15em;
     font-weight: 700;
     font-style: italic;
-    background: #fbcfe8;
-    color: #111111;
+    background: linear-gradient(135deg, #FBCFE8 0%, #F472B6 100%);
+    color: #0F172A;
+    -webkit-text-fill-color: initial;
     padding: 2px 18px;
     border-radius: 14px;
     display: inline-block;
     transform: rotate(-2.5deg);
     margin-left: 6px;
     line-height: 1.05;
+    box-shadow: 0 4px 14px rgba(244, 114, 182, 0.28);
 }
 
 .hero-text p {
@@ -380,21 +389,19 @@ nav {
 }
 
 .album-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-card);
     overflow: hidden;
     cursor: pointer;
-    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.05), 0 4px 12px rgba(139, 92, 246, 0.04);
+    box-shadow: 0 10px 30px -8px rgba(15, 23, 42, 0.06);
     transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.4s var(--ease);
 }
 
 .album-card:hover {
     transform: translateY(-8px);
-    border-color: rgba(251, 207, 232, 0.9);
-    box-shadow: 0 22px 48px -12px rgba(139, 92, 246, 0.12), 0 8px 20px rgba(0,0,0,0.06);
+    border-color: var(--border-hover);
+    box-shadow: 0 22px 48px -12px rgba(124, 58, 237, 0.15), 0 8px 20px rgba(0, 0, 0, 0.04);
 }
 
 .album-card:active {
@@ -704,15 +711,18 @@ nav {
 }
 
 .service-box {
-    background: var(--surface-color);
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
     padding: 36px 28px;
     border-radius: var(--radius-card);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-    transition: transform 0.3s var(--ease);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+    transition: transform 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 
 .service-box:hover {
     transform: translateY(-6px);
+    border-color: var(--border-hover);
+    box-shadow: 0 18px 40px -10px rgba(124, 58, 237, 0.14);
 }
 
 .service-box i {
@@ -794,12 +804,17 @@ nav {
     grid-template-columns: 0.9fr 1.1fr;
     gap: 60px;
     align-items: center;
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.95);
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
     border-radius: 32px;
     padding: 50px;
-    box-shadow: 0 20px 50px -15px rgba(139, 92, 246, 0.12), 0 8px 24px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 20px 50px -15px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
+    transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+
+.about-container:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 25px 55px -15px rgba(124, 58, 237, 0.12), 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
 .about-image-wrap {
@@ -855,18 +870,27 @@ nav {
 }
 
 .about-tag {
-    font-size: 13px;
+    font-family: var(--font-heading);
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: 1.5px;
-    color: var(--purple-dot);
+    letter-spacing: 1.8px;
+    color: #7C3AED;
     text-transform: uppercase;
+    background: rgba(124, 58, 237, 0.08);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    padding: 6px 16px;
+    border-radius: 99px;
+    display: inline-block;
+    align-self: flex-start;
 }
 
 .about-content h2 {
+    font-family: var(--font-heading);
     font-size: clamp(28px, 3.5vw, 42px);
     font-weight: 800;
     line-height: 1.2;
-    letter-spacing: -1px;
+    letter-spacing: -0.03em;
+    color: var(--text-main);
 }
 
 .about-content p {
@@ -883,17 +907,18 @@ nav {
 }
 
 .stat-card {
-    background: #F5F4FA;
+    background: #F8FAFC;
     padding: 18px 16px;
     border-radius: 18px;
     text-align: center;
-    border: 1px solid #EBEBEF;
-    transition: transform 0.3s var(--ease), border-color 0.3s var(--ease);
+    border: 1px solid #E2E8F0;
+    transition: transform 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease);
 }
 
 .stat-card:hover {
     transform: translateY(-4px);
     border-color: var(--purple-dot);
+    background: #FFFFFF;
 }
 
 .stat-card h3 {
