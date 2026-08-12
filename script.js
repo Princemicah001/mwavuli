@@ -862,15 +862,28 @@
         lightbox.addEventListener("click", (e) => { if (e.target === lightbox) close(); });
     })();
 
-    // Dynamic Floating Action Button ("Book Now" FAB) with Web Audio Synth Pop Sound
+    // Floating WhatsApp FAB with Popup Audio Sound
     function initBookNowFab() {
         const fab = document.getElementById("bookNowFab");
         const hero = document.getElementById("home");
         if (!fab || !hero) return;
 
         let soundPlayed = false;
+        const popupAudio = new Audio("assets/audio/popup.mp3");
+        popupAudio.preload = "auto";
 
-        function playPopSound() {
+        function triggerPopSound() {
+            try {
+                popupAudio.currentTime = 0;
+                popupAudio.play().catch(() => {
+                    playSynthPop();
+                });
+            } catch (e) {
+                playSynthPop();
+            }
+        }
+
+        function playSynthPop() {
             try {
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
                 if (!AudioCtx) return;
@@ -890,9 +903,7 @@
 
                 osc.start();
                 osc.stop(ctx.currentTime + 0.09);
-            } catch (e) {
-                // Audio context silent fallback
-            }
+            } catch (e) {}
         }
 
         window.addEventListener("scroll", () => {
@@ -901,7 +912,7 @@
                 if (!fab.classList.contains("visible")) {
                     fab.classList.add("visible");
                     if (!soundPlayed) {
-                        playPopSound();
+                        triggerPopSound();
                         soundPlayed = true;
                     }
                 }

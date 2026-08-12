@@ -1007,7 +1007,8 @@ nav {
     }
 }
 
-.book-now-fab {
+.book-now-fab,
+.whatsapp-fab {
     position: fixed;
     bottom: 28px;
     right: 24px;
@@ -1017,40 +1018,45 @@ nav {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: #111111;
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
     color: #ffffff;
     padding: 16px 28px;
     border-radius: var(--radius-btn);
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-heading);
     font-size: 15px;
     font-weight: 700;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25), 0 0 25px rgba(251, 207, 232, 0.4);
+    box-shadow: 0 16px 36px rgba(37, 211, 102, 0.4), 0 0 25px rgba(37, 211, 102, 0.25);
     cursor: pointer;
     opacity: 0;
     pointer-events: none;
     transition: transform 0.3s var(--spring), background 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    text-decoration: none;
 }
 
-.book-now-fab.visible {
+.book-now-fab.visible,
+.whatsapp-fab.visible {
     opacity: 1;
     pointer-events: auto;
     animation: dramaticPopIn 0.8s var(--spring) forwards;
 }
 
-.book-now-fab:hover {
+.book-now-fab:hover,
+.whatsapp-fab:hover {
     transform: translateY(-5px) scale(1.07);
-    background: #000000;
-    box-shadow: 0 22px 45px rgba(0, 0, 0, 0.35), 0 0 30px rgba(251, 207, 232, 0.6);
+    background: linear-gradient(135deg, #1EBE5D 0%, #0F7A6E 100%);
+    box-shadow: 0 22px 45px rgba(37, 211, 102, 0.5), 0 0 30px rgba(37, 211, 102, 0.4);
 }
 
-.book-now-fab i {
-    font-size: 18px;
-    color: #fbcfe8;
+.book-now-fab i,
+.whatsapp-fab i {
+    font-size: 22px;
+    color: #ffffff;
     transition: transform 0.3s var(--ease);
 }
 
-.book-now-fab:hover i {
-    transform: rotate(12deg) scale(1.1);
+.book-now-fab:hover i,
+.whatsapp-fab:hover i {
+    transform: rotate(12deg) scale(1.15);
 }
 
 footer {
