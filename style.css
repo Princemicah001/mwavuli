@@ -197,10 +197,10 @@ nav {
 /* 3D Carousel UI - Poker Card Fan Spread */
 .carousel-3d-container {
     width: 100%;
-    max-width: 1100px;
+    max-width: 1200px;
     position: relative;
     perspective: 1200px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .carousel-3d-track {
@@ -1154,11 +1154,12 @@ footer {
     .highlight-handwritten { font-size: 1.18em; padding: 3px 14px; border-radius: 12px; margin-left: 4px; }
     .hero-text p { font-size: 16px; margin-bottom: 24px; line-height: 1.6; }
     
-    .carousel-3d-track { height: 260px; }
-    .carousel-3d-item { width: 88vw; aspect-ratio: 16/11; border-radius: 18px; }
-    .carousel-3d-item.prev-1 { transform: translateX(-18%) translateY(8px) rotate(-3deg) scale(0.88); }
-    .carousel-3d-item.next-1 { transform: translateX(18%) translateY(8px) rotate(3deg) scale(0.88); }
-    .carousel-3d-controls { gap: 18px; margin-top: 22px; }
+    .carousel-3d-container { overflow: hidden; }
+    .carousel-3d-track { height: 215px; }
+    .carousel-3d-item { width: 78vw; max-width: 320px; aspect-ratio: 16/10; border-radius: 14px; }
+    .carousel-3d-item.prev-1 { transform: translateX(-24%) translateY(6px) rotate(-3deg) scale(0.85); }
+    .carousel-3d-item.next-1 { transform: translateX(24%) translateY(6px) rotate(3deg) scale(0.85); }
+    .carousel-3d-controls { gap: 16px; margin-top: 16px; }
 
     .segmented-control { width: 100%; max-width: 360px; padding: 6px; }
     .segment-btn { flex: 1; padding: 12px 16px; font-size: 14px; font-weight: 700; text-align: center; }
@@ -1222,8 +1223,8 @@ footer {
     .logo img { height: 40px; max-width: 180px; }
     .hero-text h1 { font-size: 28px; }
     .hero-text p { font-size: 15px; }
-    .carousel-3d-track { height: 220px; }
-    .carousel-3d-item { width: 92vw; aspect-ratio: 16/11; }
+    .carousel-3d-track { height: 180px; }
+    .carousel-3d-item { width: 74vw; max-width: 270px; aspect-ratio: 16/10; border-radius: 12px; }
     .photos-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .about-content h2 { font-size: 24px; }
     .about-stats { grid-template-columns: repeat(3, 1fr); gap: 6px; }
