@@ -907,7 +907,7 @@
         }
 
         window.addEventListener("scroll", () => {
-            const threshold = hero.offsetHeight * 0.4;
+            const threshold = hero.offsetHeight * 0.3;
             if (window.scrollY > threshold) {
                 if (!fab.classList.contains("visible")) {
                     fab.classList.add("visible");
@@ -916,9 +916,6 @@
                         soundPlayed = true;
                     }
                 }
-            } else {
-                fab.classList.remove("visible");
-                soundPlayed = false;
             }
         });
     }
