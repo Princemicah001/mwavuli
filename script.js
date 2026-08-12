@@ -489,6 +489,13 @@
         const nextBtn = document.getElementById("c3d-next");
         if (!track) return;
 
+        // Render initial skeleton shimmer cards while loading media
+        track.innerHTML = `
+            <div class="carousel-3d-item skeleton-card active"><div class="skel-shimmer"></div></div>
+            <div class="carousel-3d-item skeleton-card prev-1"><div class="skel-shimmer"></div></div>
+            <div class="carousel-3d-item skeleton-card next-1"><div class="skel-shimmer"></div></div>
+        `;
+
         let items = [];
         let currentIndex = 0;
         let autoplayTimer = null;
