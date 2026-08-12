@@ -4,20 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project | MWAVULI PHOTOGRAPHY</title>
-    <style>:root{--gold:#C89B3C;--gold-dark:#b4872d;--ink:#1f2937;--bg:#fafafa;--surface:#fff;--line:#e9e9ef;--radius:16px;--shadow:0 18px 45px rgba(31,41,55,.1);--section-pad:100px}*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--ink)}header{position:fixed;top:0;left:0;width:100%;background:#fff;backdrop-filter:blur(10px);box-shadow:0 15px 40px rgba(0,0,0,.08);z-index:1000}nav{width:90%;max-width:1200px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:6px 0;max-height:50px}.logo{display:flex;align-items:center;gap:15px;font-size:24px;font-weight:bold;color:#222}.logo img{width:180px;height:auto;object-fit:contain}.nav-toggle{display:none;background:none;border:none;font-size:26px;color:#222;cursor:pointer}.mobile-sidebar{display:none}.mobile-cta{display:none}nav ul{display:flex;list-style:none;align-items:center;gap:28px}nav ul li a{text-decoration:none;color:#333;font-size:16px;font-weight:500}.nav-cta{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#fff;padding:10px 22px;border-radius:30px;text-decoration:none;font-size:14px;font-weight:600}</style>
-    <link rel="stylesheet" href="style.css?v=5">
-    <link rel="preload" as="style" href="assets/fonts/fonts.css" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="assets/fonts/fonts.css"></noscript>
-    <link rel="preload" as="style" href="assets/vendor/fontawesome/css/all.min.css" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css"></noscript>
+    <title>Project Details | MWAVULI PHOTOGRAPHY</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#090d16">
+
+    <!-- Google Fonts: Syne, Cormorant Garamond, Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=10">
 </head>
 
 <body>
-    <header>
+    <header id="mainHeader">
         <nav>
             <div class="logo">
-                <img src="assets/images/logo/logo.png" alt="Mwavuli Photography" width="180" height="48">
+                <a href="index.html#home">
+                    <img src="assets/images/logo/logo.png" alt="Mwavuli Photography">
+                    <span class="logo-text">MWAVULI</span>
+                </a>
             </div>
 
             <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
@@ -28,22 +36,38 @@
                 <li><a href="index.html#home">Home</a></li>
                 <li><a href="index.html#about">About</a></li>
                 <li><a href="gallery.html">Portfolio</a></li>
-                <li><a href="projects.html" class="active">Projects</a></li>
                 <li><a href="index.html#services">Services</a></li>
                 <li><a href="index.html#testimonials">Testimonials</a></li>
                 <li><a href="index.html#contact">Contact</a></li>
-                <li class="mobile-cta"><a href="index.html#contact" class="btn">Book Now</a></li>
+                <li class="mobile-cta"><a href="index.html#contact" class="btn btn-primary">Book Now</a></li>
             </ul>
 
-            <a href="index.html#contact" class="btn nav-cta">Book Now</a>
+            <a href="index.html#contact" class="btn nav-cta">Book Now <i class="fa-solid fa-arrow-right"></i></a>
         </nav>
     </header>
 
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-backdrop"></div>
+        <div class="sidebar-panel">
+            <button class="sidebar-close" aria-label="Close menu">&times;</button>
+            <div class="sidebar-logo">MWAVULI</div>
+            <ul>
+                <li><a href="index.html#home">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="gallery.html">Portfolio</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#testimonials">Testimonials</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+                <li><a href="index.html#contact" class="btn btn-primary" style="text-align:center; margin-top:15px; width:100%;">Book Now</a></li>
+            </ul>
+        </div>
+    </div>
+
     <section class="project-page">
         <div class="page-head">
-            <!--<a href="index.html#projects" class="back-link">&larr; Back to Projects</a>-->
-            <span class="section-eyebrow">Project</span>
-            <h1 id="projectTitle">Loading...</h1>
+            <a href="gallery.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Gallery</a>
+            <span class="section-eyebrow">PROJECT FEATURE</span>
+            <h1 id="projectTitle">Loading Project...</h1>
             <p id="projectDescription"></p>
         </div>
 
@@ -57,15 +81,30 @@
         <img id="lightbox-img" src="" alt="Preview">
     </div>
 
-    
+    <footer class="footer">
+        <div class="footer-content">
+            <h2 class="footer-brand">MWAVULI PHOTOGRAPHY</h2>
+            <p class="footer-tagline">Capturing Moments. Creating Timeless Memories.</p>
 
+            <div class="footer-links">
+                <a href="index.html#home">Home</a>
+                <a href="index.html#about">About</a>
+                <a href="gallery.html">Portfolio</a>
+                <a href="index.html#services">Services</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
+
+            <p class="copyright">&copy; 2026 MWAVULI PHOTOGRAPHY. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js?v=3" defer></script>
     <script src="lightbox.js" defer></script>
-    <script src="project.js?v=2" defer></script>
+    <script src="project.js?v=3" defer></script>
     <script>
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/sw.js").catch(() => { });
         }
     </script>
 </body>
-
 </html>

@@ -435,172 +435,490 @@
         });
     }
 
-    // ---- About image (dynamic) ----
+    // Helper to preload images into browser memory & SW cache for zero latency
+    function preloadMediaAssets(urls) {
+        if (!urls) return;
+        const list = Array.isArray(urls) ? urls : [urls];
+        list.forEach(url => {
+            if (!url || typeof url !== 'string') return;
+            if (/\.(mp4|mov|webm|ogv|m4v)(\?.*)?$/i.test(url)) return;
+            const img = new Image();
+            img.src = url;
+        });
+    }
+
+    // ---- About image (dynamic & zero latency) ----
     async function loadAboutImage() {
-        const container = document.getElementById("aboutImageContainer");
-        if (!container) return;
+        const wrap = document.getElementById("aboutImageContainer");
+        const imgEl = document.getElementById("aboutImage");
+        if (!wrap && !imgEl) return;
+
+        const fallbackUrl = "https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=800&q=80";
+
         try {
             const res = await fetch(`${API}/api/about`);
             const data = await res.json();
             if (data && data.success && data.image) {
-                container.innerHTML = `<picture><source srcset="${cldUrl(mediaUrl(data.image), 'w_800,c_limit,q_auto,f_auto')}" type="image/webp"><img src="${cldUrl(mediaUrl(data.image), 'w_800,c_limit,q_auto,f_auto')}" alt="${data.alt || 'Photographer'}" loading="lazy" decoding="async" width="450" height="506" fetchpriority="high"></picture>`;
+                const optimizedUrl = cldUrl(mediaUrl(data.image), 'w_800,c_limit,q_auto,f_auto');
+                preloadMediaAssets(optimizedUrl);
+                if (imgEl) {
+                    imgEl.src = optimizedUrl;
+                    if (data.alt) imgEl.alt = data.alt;
+                } else if (wrap) {
+                    const badgeHtml = wrap.querySelector(".about-badge") ? wrap.querySelector(".about-badge").outerHTML : '';
+                    wrap.innerHTML = `<img id="aboutImage" src="${optimizedUrl}" alt="${escapeHtml(data.alt || 'Mwavuli Photographer')}" loading="eager" decoding="async" fetchpriority="high">${badgeHtml}`;
+                }
+            } else {
+                if (imgEl && (!imgEl.src || imgEl.src.includes('about.jpg'))) {
+                    imgEl.src = fallbackUrl;
+                }
             }
         } catch (err) {
             console.error("Failed to load about image", err);
+            if (imgEl && (!imgEl.src || imgEl.src.includes('about.jpg'))) {
+                imgEl.src = fallbackUrl;
+            }
         }
     }
 
-    // ---- Hero slideshow (dynamic, swipe-able) ----
-    function initHeroSlideshow() {
-        const container = document.getElementById("heroSlides");
+    // ---- 3D Cover Flow Hero Slideshow (Cloudinary dynamic API) ----
+    function init3DCoverFlow() {
+        const track = document.getElementById("c3d-track");
+        const dotsContainer = document.getElementById("c3d-dots");
+        const prevBtn = document.getElementById("c3d-prev");
+        const nextBtn = document.getElementById("c3d-next");
+        if (!track) return;
+
+        let items = [];
+        let currentIndex = 0;
+        let autoplayTimer = null;
+
+        function update3DPositions() {
+            const cardEls = track.querySelectorAll(".carousel-3d-item");
+            const dotEls = dotsContainer ? dotsContainer.querySelectorAll(".carousel-3d-dot") : [];
+            const total = cardEls.length;
+            if (!total) return;
+
+            cardEls.forEach((item, i) => {
+                item.className = "carousel-3d-item";
+                let diff = (i - currentIndex) % total;
+                if (diff < 0) diff += total;
+                if (diff > Math.floor(total / 2)) diff -= total;
+
+                if (diff === 0) item.classList.add("active");
+                else if (diff === -1) item.classList.add("prev-1");
+                else if (diff === 1) item.classList.add("next-1");
+                else if (diff === -2) item.classList.add("prev-2");
+                else if (diff === 2) item.classList.add("next-2");
+                else item.classList.add("hidden");
+            });
+
+            dotEls.forEach((dot, i) => {
+                dot.classList.toggle("active", i === currentIndex);
+            });
+        }
+
+        function next3D() {
+            const total = track.children.length;
+            if (!total) return;
+            currentIndex = (currentIndex + 1) % total;
+            update3DPositions();
+        }
+
+        function prev3D() {
+            const total = track.children.length;
+            if (!total) return;
+            currentIndex = (currentIndex - 1 + total) % total;
+            update3DPositions();
+        }
+
+        function startAutoplay() {
+            stopAutoplay();
+            autoplayTimer = setInterval(next3D, 10000); // 10s strict uninterrupted interval
+        }
+
+        function stopAutoplay() {
+            if (autoplayTimer) clearInterval(autoplayTimer);
+            autoplayTimer = null;
+        }
+
+        async function load3DItems() {
+            try {
+                // Fetch hero slides or recent photos
+                const [heroRes, photosRes] = await Promise.all([
+                    fetch(`${API}/api/hero`).catch(() => null),
+                    fetch(`${API}/api/photos`).catch(() => null)
+                ]);
+
+                let slidesData = [];
+                if (heroRes && heroRes.ok) {
+                    const hData = await heroRes.json();
+                    if (hData && hData.slides && hData.slides.length) {
+                        slidesData = hData.slides.map(s => {
+                            const isVideo = s.mediaType === 'video' || (s.image && /\.(mp4|mov|webm|ogv|m4v)(\?.*)?$/i.test(s.image));
+                            return { src: cldUrl(mediaUrl(s.image), "w_1200,c_limit,q_auto,f_auto"), isVideo };
+                        });
+                    }
+                }
+
+                if (!slidesData.length && photosRes && photosRes.ok) {
+                    const pData = await photosRes.json();
+                    if (pData && pData.photos && pData.photos.length) {
+                        slidesData = pData.photos.slice(0, 7).map(p => {
+                            const isVideo = p.mediaType === 'video' || (p.file && /\.(mp4|mov|webm|ogv|m4v)(\?.*)?$/i.test(p.file));
+                            return { src: cldUrl(mediaUrl(p.file), "w_1200,c_limit,q_auto,f_auto"), isVideo };
+                        });
+                    }
+                }
+
+                // Default high-quality fallbacks if backend array is empty
+                if (!slidesData.length) {
+                    slidesData = [
+                        { src: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1000&q=80", isVideo: false },
+                        { src: "https://images.unsplash.com/photo-1472396961693-142e6e269027?w=1000&q=80", isVideo: false },
+                        { src: "https://images.unsplash.com/photo-1502472581566-8ac52a65a396?w=1000&q=80", isVideo: false },
+                        { src: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=1000&q=80", isVideo: false },
+                        { src: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=1000&q=80", isVideo: false }
+                    ];
+                }
+
+                // Preload all image assets for 0 latency slide transitions
+                preloadMediaAssets(slidesData.map(s => s.src));
+
+                track.innerHTML = slidesData.map((item, idx) => {
+                    return item.isVideo
+                        ? `<div class="carousel-3d-item"><video autoplay muted loop playsinline webkit-playsinline src="${item.src}"></video></div>`
+                        : `<div class="carousel-3d-item"><img src="${item.src}" alt="Hero Showcase" loading="${idx === 0 ? 'eager' : 'lazy'}" fetchpriority="${idx === 0 ? 'high' : 'auto'}" decoding="async"></div>`;
+                }).join("");
+                
+                if (dotsContainer) {
+                    dotsContainer.innerHTML = slidesData.map((_, i) => `<span class="carousel-3d-dot" data-index="${i}"></span>`).join("");
+                    dotsContainer.querySelectorAll(".carousel-3d-dot").forEach((dot, i) => {
+                        dot.addEventListener("click", () => {
+                            currentIndex = i;
+                            update3DPositions();
+                        });
+                    });
+                }
+
+                track.querySelectorAll(".carousel-3d-item").forEach((item, i) => {
+                    item.addEventListener("click", () => {
+                        currentIndex = i;
+                        update3DPositions();
+                    });
+                });
+
+                currentIndex = Math.floor(slidesData.length / 2);
+                update3DPositions();
+                startAutoplay();
+            } catch (err) {
+                console.error("Failed to load 3D carousel items", err);
+            }
+        }
+
+        if (prevBtn) prevBtn.addEventListener("click", () => { prev3D(); });
+        if (nextBtn) nextBtn.addEventListener("click", () => { next3D(); });
+
+        load3DItems();
+    }
+
+    // ---- Segmented Controls & Dynamic Cloudinary Portfolio ----
+    function initMinimalPortfolio() {
+        const container = document.getElementById("dynamicContainer");
+        const segmentBtns = document.querySelectorAll(".segment-btn");
+        const indicator = document.getElementById("segmentIndicator");
         if (!container) return;
 
-        let slides = [];
-        let index = 0;
-        let timer = null;
-        let dragging = false;
-        let startX = 0;
-        let deltaX = 0;
-        let autoplay = true;
-        let interval = 5000;
-        let track = null;
+        let projects = [];
+        let allPhotos = [];
 
-        function setTransform(px) {
-            if (!track) return;
-            track.style.transform = `translateX(${px}px)`;
-        }
+        const updateIndicator = (activeBtn) => {
+            if (!indicator || !activeBtn) return;
+            indicator.style.width = `${activeBtn.offsetWidth}px`;
+            indicator.style.transform = `translateX(${activeBtn.offsetLeft - 6}px)`;
+        };
 
-        function heroBg(s) {
-            return cldUrl(mediaUrl(s.image), "w_1280,c_limit,q_auto,f_auto");
-        }
+        const activeSegment = document.querySelector(".segment-btn.active");
+        if (activeSegment) updateIndicator(activeSegment);
 
-        // Ensure a slide has its (size-constrained) background applied before
-        // it is shown, so we never download a slide we don't need.
-        function ensureBg(i) {
-            const el = track && track.children[i];
-            if (el && el.dataset.bg) {
-                el.style.backgroundImage = `url('${el.dataset.bg}')`;
-                delete el.dataset.bg;
+        segmentBtns.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                segmentBtns.forEach(b => b.classList.remove("active"));
+                e.target.classList.add("active");
+                updateIndicator(e.target);
+
+                const target = e.target.getAttribute("data-target");
+                if (target === "albums") renderAlbums();
+                else renderAllPhotos();
+            });
+        });
+
+        async function fetchPortfolioData() {
+            try {
+                const [projectsRes, photosRes] = await Promise.all([
+                    fetch(`${API}/api/projects`),
+                    fetch(`${API}/api/photos`)
+                ]);
+                const projectsData = await projectsRes.json();
+                const photosData = await photosRes.json();
+
+                projects = projectsData.projects || [];
+                allPhotos = photosData.photos || [];
+
+                renderAlbums();
+            } catch (err) {
+                console.error("Failed to load portfolio data", err);
+                container.innerHTML = "<p class='gallery-empty' style='text-align:center;'>Could not load portfolio photos.</p>";
             }
         }
 
-        function go(i) {
-            if (!slides.length) return;
-            index = (i + slides.length) % slides.length;
-            ensureBg(index);
-            if (track) {
-                track.style.transition = "transform 0.8s cubic-bezier(.22,.61,.36,1)";
-                setTransform(-index * container.clientWidth);
-            }
-        }
-
-        function startAuto() {
-            stopAuto();
-            if (autoplay && slides.length > 1) {
-                timer = setInterval(() => go(index + 1), interval);
-            }
-        }
-
-        function stopAuto() {
-            if (timer) clearInterval(timer);
-            timer = null;
-        }
-
-        function buildTrack() {
-            // Preload only the first (above-the-fold) slide for an instant LCP.
-            const preload = document.createElement("link");
-            preload.rel = "preload";
-            preload.as = "image";
-            preload.href = heroBg(slides[0]);
-            document.head.appendChild(preload);
-
-            container.innerHTML = `<div class="hero-track" id="heroTrack">` +
-                slides.map((s, i) =>
-                    i === 0
-                        ? `<div class="hero-slide" style="background-image:url('${heroBg(s)}')"></div>`
-                        : `<div class="hero-slide" data-bg="${heroBg(s)}"></div>`
-                ).join("") +
-                `</div>`;
-            track = document.getElementById("heroTrack");
-
-            // Fill in the remaining slides only when the browser is idle, so a
-            // slow device isn't swamped downloading every hero image at once.
-            const fillRest = () => slides.forEach((s, i) => ensureBg(i));
-            if ("requestIdleCallback" in window) {
-                requestIdleCallback(fillRest, { timeout: 2500 });
-            } else {
-                window.addEventListener("load", fillRest, { once: true });
+        function renderAlbums() {
+            if (!projects.length) {
+                renderAllPhotos();
+                return;
             }
 
-            track.addEventListener("touchstart", (e) => {
-                dragging = true;
-                startX = e.touches[0].clientX;
-                deltaX = 0;
-                stopAuto();
-                track.style.transition = "none";
-            }, { passive: true });
+            container.innerHTML = `<div class="albums-grid"></div>`;
+            const grid = container.querySelector(".albums-grid");
 
-            track.addEventListener("touchmove", (e) => {
-                if (!dragging) return;
-                deltaX = e.touches[0].clientX - startX;
-                setTransform(-index * container.clientWidth + deltaX);
-            }, { passive: true });
+            projects.forEach(p => {
+                const pPhotos = allPhotos.filter(photo => photo.project === p._id);
+                const count = pPhotos.length || 1;
+                const isVideoCover = p.mediaType === 'video' || (p.cover && /\.(mp4|mov|webm|ogv|m4v)(\?.*)?$/i.test(p.cover));
+                const coverUrl = p.cover
+                    ? cldUrl(mediaUrl(p.cover), "w_800,c_limit,q_auto,f_auto")
+                    : "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80";
 
-            track.addEventListener("touchend", () => {
-                if (!dragging) return;
-                dragging = false;
-                if (Math.abs(deltaX) > 50) go(index + (deltaX < 0 ? 1 : -1));
-                else go(index);
-                startAuto();
+                const card = document.createElement("div");
+                card.className = "album-card reveal-item reveal active";
+                card.innerHTML = `
+                    <div class="album-cover">
+                        ${isVideoCover 
+                            ? `<video autoplay muted loop playsinline webkit-playsinline src="${coverUrl}"></video>` 
+                            : `<img src="${coverUrl}" alt="${escapeHtml(p.title)}" loading="lazy">`
+                        }
+                    </div>
+                    <div class="album-info">
+                        <div class="album-title">${escapeHtml(p.title)}</div>
+                        <div class="album-count">${count} photos</div>
+                    </div>
+                `;
+                card.addEventListener("click", () => renderAlbumPhotos(p._id, p.title));
+                grid.appendChild(card);
             });
-
-            track.addEventListener("mousedown", (e) => {
-                dragging = true;
-                startX = e.clientX;
-                deltaX = 0;
-                stopAuto();
-                track.style.transition = "none";
-            });
-
-            window.addEventListener("mousemove", (e) => {
-                if (!dragging) return;
-                deltaX = e.clientX - startX;
-                setTransform(-index * container.clientWidth + deltaX);
-            });
-
-            window.addEventListener("mouseup", () => {
-                if (!dragging) return;
-                dragging = false;
-                if (Math.abs(deltaX) > 50) go(index + (deltaX < 0 ? 1 : -1));
-                else go(index);
-                startAuto();
-            });
-
-            window.addEventListener("resize", () => go(index));
-
-            go(0);
-            startAuto();
+            playAllVideosOnPage();
         }
 
-        function showFallback() {
-            container.innerHTML = `<div class="hero-slide hero-slide-fallback"></div>`;
+        function renderAllPhotos() {
+            renderPhotoGrid(allPhotos);
         }
 
-        fetch(`${API}/api/hero`)
-            .then(r => r.json())
-            .then(data => {
-                if (!data || !data.success || !data.enabled || !data.slides || !data.slides.length) {
-                    showFallback();
-                    return;
+        function renderAlbumPhotos(projectId, projectTitle) {
+            const pPhotos = allPhotos.filter(photo => photo.project === projectId);
+            renderPhotoGrid(pPhotos, projectTitle);
+        }
+
+        function renderPhotoGrid(photosList, albumTitle = null) {
+            if (albumTitle) {
+                segmentBtns.forEach(b => b.classList.remove("active"));
+                if (indicator) indicator.style.width = "0";
+            }
+
+            let html = "";
+            if (albumTitle) {
+                html += `
+                    <div class="header-actions">
+                        <button class="back-btn" id="backToAlbumsBtn">
+                            <i class="fa-solid fa-arrow-left"></i> Back to Albums
+                        </button>
+                        <h2>${escapeHtml(albumTitle)}</h2>
+                    </div>
+                `;
+            }
+
+            html += `<div class="photos-grid"></div>`;
+            container.innerHTML = html;
+            const grid = container.querySelector(".photos-grid");
+
+            if (!photosList.length) {
+                grid.innerHTML = "<p class='gallery-empty' style='grid-column:1/-1; text-align:center;'>No photos available in this album.</p>";
+                return;
+            }
+
+            const MOSAIC = ["big", "", "tall", "", "wide", "", "tall", "", "", "wide"];
+            const fullUrls = photosList.map(p => cldUrl(mediaUrl(p.file), "w_1600,c_limit,q_auto,f_auto"));
+
+            photosList.forEach((photo, idx) => {
+                const item = document.createElement("div");
+                const spanClass = MOSAIC[idx % MOSAIC.length];
+                item.className = `photo-item reveal-item reveal active ${spanClass}`;
+                const thumbUrl = cldUrl(mediaUrl(photo.thumbnail || photo.file), "w_800,c_limit,q_auto,f_auto");
+                const isVideo = photo.mediaType === "video" || (photo.file && /\.(mp4|mov|webm|ogv|m4v)(\?.*)?$/i.test(photo.file));
+                
+                if (isVideo) {
+                    item.innerHTML = `<video autoplay muted loop playsinline webkit-playsinline src="${cldUrl(mediaUrl(photo.file), "w_1200,c_limit,q_auto,f_auto")}"></video>`;
+                } else {
+                    item.innerHTML = `<img src="${thumbUrl}" alt="${escapeHtml(photo.title || 'Photo')}" loading="lazy">`;
                 }
-                slides = data.slides;
-                autoplay = data.autoplay;
-                interval = data.interval || 5000;
-                buildTrack();
-            })
-            .catch(() => showFallback());
+
+                item.addEventListener("click", () => {
+                    if (window.openLightbox) window.openLightbox(fullUrls, idx);
+                });
+                grid.appendChild(item);
+            });
+
+            const backBtn = document.getElementById("backToAlbumsBtn");
+            if (backBtn) {
+                backBtn.addEventListener("click", () => {
+                    const albBtn = document.querySelector('.segment-btn[data-target="albums"]');
+                    if (albBtn) albBtn.click();
+                    else renderAlbums();
+                });
+            }
+            playAllVideosOnPage();
+        }
+
+        fetchPortfolioData();
     }
 
-    loadAboutImage();
-    initHeroSlideshow();
+    // Lightbox integration
+    (function initLightbox() {
+        const lightbox = document.getElementById("lightbox");
+        const lightboxImg = document.getElementById("lightbox-img");
+        const closeBtn = document.getElementById("lightboxClose");
+        const prevBtn = document.getElementById("lightboxPrev");
+        const nextBtn = document.getElementById("lightboxNext");
+        if (!lightbox) return;
+
+        let sources = [];
+        let currentIndex = 0;
+
+        window.openLightbox = function (imgs, idx = 0) {
+            sources = imgs;
+            currentIndex = idx;
+            if (lightboxImg) lightboxImg.src = sources[currentIndex];
+            lightbox.classList.add("active");
+            document.body.style.overflow = "hidden";
+        };
+
+        function close() {
+            lightbox.classList.remove("active");
+            document.body.style.overflow = "";
+        }
+
+        if (closeBtn) closeBtn.addEventListener("click", close);
+        if (prevBtn) prevBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            currentIndex = (currentIndex - 1 + sources.length) % sources.length;
+            lightboxImg.src = sources[currentIndex];
+        });
+        if (nextBtn) nextBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            currentIndex = (currentIndex + 1) % sources.length;
+            lightboxImg.src = sources[currentIndex];
+        });
+        lightbox.addEventListener("click", (e) => { if (e.target === lightbox) close(); });
+    })();
+
+    // Dynamic Floating Action Button ("Book Now" FAB) with Web Audio Synth Pop Sound
+    function initBookNowFab() {
+        const fab = document.getElementById("bookNowFab");
+        const hero = document.getElementById("home");
+        if (!fab || !hero) return;
+
+        let soundPlayed = false;
+
+        function playPopSound() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(320, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(750, ctx.currentTime + 0.09);
+
+                gain.gain.setValueAtTime(0.35, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.09);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.09);
+            } catch (e) {
+                // Audio context silent fallback
+            }
+        }
+
+        window.addEventListener("scroll", () => {
+            const threshold = hero.offsetHeight * 0.4;
+            if (window.scrollY > threshold) {
+                if (!fab.classList.contains("visible")) {
+                    fab.classList.add("visible");
+                    if (!soundPlayed) {
+                        playPopSound();
+                        soundPlayed = true;
+                    }
+                }
+            } else {
+                fab.classList.remove("visible");
+                soundPlayed = false;
+            }
+        });
+    }
+
+    // Global scroll reveal
+    function initScrollReveal() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("active");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+    }
+
+    function playAllVideosOnPage() {
+        const videos = document.querySelectorAll("video");
+        videos.forEach(v => {
+            v.muted = true;
+            v.playsInline = true;
+            v.setAttribute("autoplay", "");
+            v.setAttribute("muted", "");
+            v.setAttribute("playsinline", "");
+            v.setAttribute("webkit-playsinline", "");
+            const p = v.play();
+            if (p !== undefined) {
+                p.catch(() => {});
+            }
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+            loadAboutImage();
+            playAllVideosOnPage();
+            init3DCoverFlow();
+            initMinimalPortfolio();
+            initBookNowFab();
+            initScrollReveal();
+        });
+    } else {
+        loadAboutImage();
+        playAllVideosOnPage();
+        init3DCoverFlow();
+        initMinimalPortfolio();
+        initBookNowFab();
+        initScrollReveal();
+    }
+
+    ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, playAllVideosOnPage, { once: true, passive: true });
+    });
 })();

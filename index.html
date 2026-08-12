@@ -1,49 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MWAVULI PHOTOGRAPHY</title>
+    <title>MWAVULI PHOTOGRAPHY | Minimal Portfolio</title>
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
-    <link rel="stylesheet" href="style.css">
-    <!-- Instant first-impression hero: preload the LCP image so it paints
-         before any JS runs, instead of waiting on the /api/hero fetch. -->
-    <link rel="preload" as="image" href="assets/images/hero/hero.webp" fetchpriority="high">
-    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <meta name="theme-color" content="#F7F7F9">
+
+    <!-- Minimalist Typography: Poppins & Caveat Handwritten -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=21">
 </head>
-
 <body>
+
     <header>
         <nav>
-            <div class="logo">
-                <a href="#home">
-                    <img href="#home" src="assets/images/logo/logo.png" alt="Mwavuli Photography">
+            <div class="logo" onclick="window.location.href='#home'">
+                <img src="assets/images/logo/logo.png" alt="Mwavuli Photography">
             </div>
 
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-
-            <ul id="navMenu">
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#projects">Projects</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
                 <li><a href="#services">Services</a></li>
-                <li><a href="#testimonials">Testimonials</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li class="mobile-cta"><a href="#contact" class="btn">Book Now</a></li>
             </ul>
 
-            <a href="#contact" class="btn nav-cta" style="font-size;">Book Now</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
         </nav>
     </header>
 
@@ -51,414 +41,170 @@
         <div class="sidebar-backdrop"></div>
         <div class="sidebar-panel">
             <button class="sidebar-close" aria-label="Close menu">&times;</button>
-            <div class="sidebar-logo">MWAVULI</div>
             <ul>
+                <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="gallery.html">Portfolio</a></li>
-                <li><a href="#projects">Projects</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
                 <li><a href="#services">Services</a></li>
-                <li><a href="#testimonials">Testimonials</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="#contact" class="btn" style="text-align:center; margin-top:10px;">Book Now</a></li>
             </ul>
         </div>
     </div>
 
-    <section id="home" class="hero">
-        <div class="hero-bg" aria-hidden="true"></div>
-        <div class="hero-slides" id="heroSlides" aria-hidden="true"></div>
-
-        <div class="overlay">
-
-            <div class="hero-content">
-                <h2>Transforming ordinary moments into extraordinary memories</h2>
-                <p>
-                    Passionate and visual storytelling dedicated to preserving life's most meaningful moments through
-                    timeless imagery.
-                </p>
-                <div class="buttons">
-
-                    <a href="gallery.html" class="btn">View Portfolio</a>
-
-                    <a href="https://wa.me/254769578232" class="btn2" target="_blank">
-                        Book a Session
-                    </a>
-                </div>
-
-            </div>
-
+    <!-- 3D CAROUSEL HERO SECTION -->
+    <section id="home" class="hero reveal">
+        <div class="hero-text">
+            <h1>Discover your <span class="highlight-handwritten">perfect</span><br>memory</h1>
+            <p>Mwavuli uses a playful approach and natural light to match your unique personality with breathtaking, timeless imagery. Say goodbye to awkward poses.</p>
         </div>
-
-        <a href="#portfolio" class="scroll-cue" aria-label="Scroll to portfolio"><i
-                class="fa-solid fa-chevron-down"></i></a>
-
+        
+        <div class="carousel-3d-container">
+            <div class="carousel-3d-track" id="c3d-track">
+                <!-- Dynamically populated from Cloudinary via API -->
+            </div>
+            
+            <div class="carousel-3d-controls">
+                <button class="carousel-3d-btn" id="c3d-prev" aria-label="Previous"><i class="fa-solid fa-arrow-left-long"></i></button>
+                <div class="carousel-3d-dots" id="c3d-dots">
+                    <!-- Dots injected via JS -->
+                </div>
+                <button class="carousel-3d-btn" id="c3d-next" aria-label="Next"><i class="fa-solid fa-arrow-right-long"></i></button>
+            </div>
+        </div>
     </section>
 
-    <section id="about" class="about">
-
-        <div class="about-container">
-
-            <div class="about-image" id="aboutImageContainer">
-
+    <!-- PORTFOLIO SECTION WITH SEGMENTED CONTROLS -->
+    <section id="portfolio" class="gallery-container reveal">
+        <div class="view-controls">
+            <div class="segmented-control" id="segmentedControl">
+                <div class="segment-indicator" id="segmentIndicator"></div>
+                <button class="segment-btn active" data-target="albums">Albums</button>
+                <button class="segment-btn" data-target="photos">All Photos</button>
             </div>
+        </div>
 
-            <div class="about-text">
+        <div id="dynamicContainer">
+            <!-- Dynamic Cloudinary Albums or Photos injected via JS -->
+        </div>
+    </section>
 
-                <h4>ABOUT ME</h4>
-
-                <h2>Capturing Life's Beautiful Moments</h2>
-
-                <p>
-                    I am a passionate photographer specializing in weddings,
-                    portraits, graduation ceremonies, and events. Every photo
-                    tells a unique story, and my mission is to preserve those
-                    memories for a lifetime.
-                </p>
-
-                <div class="stats">
-
-                    <div class="stat">
-                        <h3>300+</h3>
-                        <p>Photoshoots</p>
+    <!-- ABOUT SECTION -->
+    <section id="about" class="about-section reveal">
+        <div class="about-container">
+            <div class="about-image-wrap" id="aboutImageContainer">
+                <img id="aboutImage" src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=800&q=80" alt="Mwavuli Photographer" loading="eager" decoding="async" fetchpriority="high">
+                <div class="about-badge">
+                    <span class="badge-number">7+</span>
+                    <span class="badge-text">Years of Excellence</span>
+                </div>
+            </div>
+            <div class="about-content">
+                <span class="about-tag">THE ARTIST BEHIND THE LENS</span>
+                <h2>Capturing Timeless Moments & Authentic Expressions</h2>
+                <p id="aboutBioText">At Mwavuli Photography, we believe every frame tells an unscripted story. Founded on a passion for natural light and candid visual storytelling, our approach turns fleeting emotions into enduring works of art. Whether it's the quiet romance of an elopement or the vibrant energy of a celebration, we match your unique personality with artistic precision.</p>
+                
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <h3>350+</h3>
+                        <p>Shoots Completed</p>
                     </div>
-
-                    <div class="stat">
-                        <h3>150+</h3>
+                    <div class="stat-card">
+                        <h3>100%</h3>
                         <p>Happy Clients</p>
                     </div>
-
-                    <div class="stat">
-                        <h3>5+</h3>
-                        <p>Years Experience</p>
+                    <div class="stat-card">
+                        <h3>15+</h3>
+                        <p>Awards & Features</p>
                     </div>
-
                 </div>
 
-            </div>
-
-        </div>
-
-    </section>
-    <div id="projects">
-        <section id="portfolio" class="portfolio teaser">
-
-            <span class="section-eyebrow">Featured Work</span>
-            <h2>Projects</h2>
-            <p>Browse our latest projects. Select any cover to view the full collection.</p>
-
-            <div class="carousel-wrap">
-                <button class="carousel-btn prev" id="carouselPrev" aria-label="Previous"><i
-                        class="fa-solid fa-chevron-left"></i></button>
-                <div class="carousel-track" id="featuredCarousel"></div>
-                <button class="carousel-btn next" id="carouselNext" aria-label="Next"><i
-                        class="fa-solid fa-chevron-right"></i></button>
-            </div>
-
-            <div class="teaser-cta">
-                <a href="gallery.html" class="btn">See More</a>
-            </div>
-
-        </section>
-    </div>
-    <section id="services" class="services">
-
-        <h2>My Services</h2>
-        <p>Capturing life's most precious moments through timeless photography. From weddings and graduations to family
-            portraits and corporate events, every image tells a unique story.</p>
-
-        <div class="service-container">
-
-            <div class="service-card">
-                <div class="icon"><i class="fa-solid fa-camera"></i></div>
-                <h3>Wedding Photography</h3>
-                <p>Capturing every unforgettable moment of your special day.</p>
-            </div>
-
-            <div class="service-card">
-                <div class="icon"><i class="fa-solid fa-graduation-cap"></i></div>
-                <h3>Graduation Photography</h3>
-                <p>Celebrate your achievements with timeless portraits.</p>
-            </div>
-
-            <div class="service-card">
-                <div class="icon"><i class="fa-solid fa-calendar-days"></i></div>
-                <h3>Event Photography</h3>
-                <p>Professional coverage for birthdays, parties, and events.</p>
-            </div>
-
-            <div class="service-card">
-                <div class="icon"><i class="fa-solid fa-users"></i></div>
-                <h3>Family Portraits</h3>
-                <p>Create lasting memories with beautiful family portraits.</p>
-            </div>
-
-            <div class="service-card">
-                <div class="icon"><i class="fa-solid fa-building"></i></div>
-                <h3>Corporate Photography</h3>
-                <p>Professional branding and business photography services.</p>
-            </div>
-
-            <div class="service-card">
-                <div class="icon"><i class="fa-solid fa-ring"></i></div>
-                <h3>Engagement Shoots</h3>
-                <p>Tell your love story with creative engagement photography.</p>
-            </div>
-
-        </div>
-
-    </section>
-    <!--
-    <section id="projects" class="projects">
-
-        <h2>All Projects</h2>
-        <p>Every project tells a unique story.</p>
-
-        <div id="projectsContainer" class="home-projects-grid"></div>
-
-        <div class="home-gallery-section">
-            <h3>GALLERY</h3>
-            <p class="home-gallery-subtitle">A curated mosaic of moments we've captured.</p>
-            <div class="gallery" id="homeGallery" data-limit="12"></div>
-            <div class="teaser-cta">
-                <a href="gallery.html" class="btn">View Full Gallery</a>
+                <a href="#contact" class="btn-about-cta">Work With Us <i class="fa-solid fa-arrow-right"></i></a>
             </div>
         </div>
-
-    </section>
--->
-    <section id="testimonials" class="testimonials">
-
-        <h2>What My Clients Say</h2>
-        <p>Real experiences from amazing clients.</p>
-
-        <div class="testimonial-container" id="testimonialContainer">
-
-            <div class="testimonial-card">
-                <div class="stars">
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                </div>
-                <p>
-                    "Mwavuli Photography captured every beautiful
-                    moment of our wedding. The photos were
-                    breathtaking."
-                </p>
-
-                <h4>Brian & Faith</h4>
-            </div>
-
-            <div class="testimonial-card">
-                <div class="stars">
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                </div>
-
-                <p>
-                    "Professional, friendly and creative.
-                    Our graduation photos were perfect."
-                </p>
-
-                <h4>Sarah Wanjiku</h4>
-            </div>
-
-            <div class="testimonial-card">
-                <div class="stars">
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                    <i class="fa-solid fa-star"></i>
-
-                </div>
-
-                <p>
-                    "The family portraits exceeded our
-                    expectations. Highly recommended!"
-                </p>
-
-                <h4>Otieno Family</h4>
-            </div>
-
-        </div>
-
-    </section>
-    <section id="contact" class="contact">
-
-        <div class="contact-title">
-
-            <h2>Get In Touch</h2>
-
-            <p>Let's create beautiful memories together.</p>
-
-        </div>
-
-        <div class="contact-container">
-
-            <div class="contact-info">
-
-                <h3>Contact Information</h3>
-                <p><strong><i class="fa-solid fa-location-dot"></i> Location:</strong>Nairobi, Kenya</p>
-                <p><strong><i class="fa-solid fa-phone"></i> Phone:</strong> +254 769 578 232</p>
-                <p><strong><i class="fa-solid fa-envelope"></i> Email:</strong> mwavuliphotography@gmail.com</p>
-                <p><strong><i class="fa-brands fa-instagram"></i></i> Instagram:</strong> Ochieng_Photographer</p>
-                <p><strong><i class="fa-brands fa-whatsapp"></i></i> WhatsApp:</strong> +254 769 578 232</p>
-
-            </div>
-
-            <div class="contact-form">
-
-                <form id="contactForm">
-
-                    <input type="text" id="name" placeholder="Full Name" required>
-
-                    <input type="email" id="email" placeholder="Email Address" required>
-
-                    <input type="tel" id="phone" placeholder="Phone Number" required>
-
-                    <div class="service-picker" id="servicePicker">
-                        <div class="service-picker-trigger" id="servicePickerTrigger" tabindex="0" role="combobox"
-                            aria-expanded="false" aria-haspopup="listbox" aria-labelledby="serviceLabel">
-                            <span class="service-picker-value" id="servicePickerValue">Select Photography Service</span>
-                            <span class="service-picker-caret"><i class="fa-solid fa-chevron-down"></i></span>
-                        </div>
-                        <div class="service-picker-dropdown" id="servicePickerDropdown" role="listbox">
-                            <div class="service-picker-option" data-value="Wedding" role="option" aria-selected="false"
-                                tabindex="-1">
-                                <span class="service-icon"><i class="fa-solid fa-ring"></i></span>
-                                <span class="service-text">Wedding</span>
-                            </div>
-                            <div class="service-picker-option" data-value="Portrait" role="option" aria-selected="false"
-                                tabindex="-1">
-                                <span class="service-icon"><i class="fa-solid fa-camera"></i></span>
-                                <span class="service-text">Portrait</span>
-                            </div>
-                            <div class="service-picker-option" data-value="Graduation" role="option"
-                                aria-selected="false" tabindex="-1">
-                                <span class="service-icon"><i class="fa-solid fa-graduation-cap"></i></span>
-                                <span class="service-text">Graduation</span>
-                            </div>
-                            <div class="service-picker-option" data-value="Event" role="option" aria-selected="false"
-                                tabindex="-1">
-                                <span class="service-icon"><i class="fa-solid fa-calendar-days"></i></span>
-                                <span class="service-text">Event</span>
-                            </div>
-                        </div>
-                        <select id="service" required hidden>
-                            <option value="">Select Photography Service</option>
-                            <option value="Wedding">Wedding</option>
-                            <option value="Portrait">Portrait</option>
-                            <option value="Graduation">Graduation</option>
-                            <option value="Event">Event</option>
-                        </select>
-                    </div>
-
-                    <div class="datepicker-container">
-                        <input type="text" id="date" class="custom-date-input" placeholder="Select date" required
-                            readonly>
-                        <div class="mini-calendar" id="miniCalendar">
-                            <div class="calendar-header">
-                                <button class="nav-btn" id="prevMonthBtn" aria-label="Previous Month">&larr;</button>
-                                <span class="current-month-year" id="monthYearTitle">July 2026</span>
-                                <button class="nav-btn" id="nextMonthBtn" aria-label="Next Month">&rarr;</button>
-                            </div>
-                            <div class="calendar-weekdays">
-                                <div class="weekday">Su</div>
-                                <div class="weekday">Mo</div>
-                                <div class="weekday">Tu</div>
-                                <div class="weekday">We</div>
-                                <div class="weekday">Th</div>
-                                <div class="weekday">Fr</div>
-                                <div class="weekday">Sa</div>
-                            </div>
-                            <div class="calendar-days" id="calendarDaysGrid"></div>
-                        </div>
-                    </div>
-
-                    <textarea id="message" placeholder="Tell us about your event..." rows="6"></textarea>
-
-                    <button type="submit">Book Now</button>
-
-                    <p id="bookingMessage"></p>
-
-                </form>
-
-            </div>
-
-        </div>
-
     </section>
 
-    <!-- Image Lightbox -->
+    <!-- SERVICES SECTION -->
+    <section id="services" class="services-section reveal">
+        <div class="section-head">
+            <h2>Our Photography Services</h2>
+            <p>Tailored photography packages for every milestone.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-box">
+                <div class="service-icon"><i class="fa-solid fa-ring"></i></div>
+                <h3>Weddings & Elopements</h3>
+                <p>Full day wedding coverage capturing authentic emotions and timeless romance.</p>
+            </div>
+            <div class="service-box">
+                <div class="service-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <h3>Graduations</h3>
+                <p>Celebrate academic milestones with creative individual and family portraits.</p>
+            </div>
+            <div class="service-box">
+                <div class="service-icon"><i class="fa-solid fa-camera"></i></div>
+                <h3>Studio Portraits</h3>
+                <p>Professional headshots, fashion editorials, and executive branding sessions.</p>
+            </div>
+            <div class="service-box">
+                <div class="service-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                <h3>Events & Galas</h3>
+                <p>High-end event photography with instant media asset delivery.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="contact-section reveal">
+        <div class="section-head">
+            <h2>Book Your Session</h2>
+            <p>Let's discuss your date, venue, and vision.</p>
+        </div>
+        <div class="contact-card">
+            <form id="contactForm" class="contact-form">
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="email" id="email" placeholder="Your Email" required>
+                <input type="tel" id="phone" placeholder="Phone Number" required>
+                <select id="service" required>
+                    <option value="">Select Photography Service</option>
+                    <option value="Wedding">Wedding & Elopement</option>
+                    <option value="Portrait">Studio Portrait</option>
+                    <option value="Graduation">Graduation</option>
+                    <option value="Event">Corporate Event</option>
+                </select>
+                <input type="text" id="date" placeholder="Preferred Date (e.g. 2026-09-15)" required>
+                <textarea id="message" rows="4" placeholder="Tell us about your event details..."></textarea>
+                <button type="submit" class="submit-btn">Send Booking Request</button>
+                <p id="bookingMessage" style="text-align: center; margin-top: 10px;"></p>
+            </form>
+        </div>
+    </section>
+
+    <!-- FLOATING DRAMATIC BOOK NOW FAB -->
+    <a href="#contact" class="book-now-fab" id="bookNowFab" aria-label="Book Now">
+        <i class="fa-solid fa-calendar-check"></i>
+        <span>Book Now</span>
+    </a>
+
+    <!-- LIGHTBOX -->
     <div class="lightbox" id="lightbox">
-
-        <span class="close">&times;</span>
-
-        <img id="lightbox-img" src="" alt="Preview">
-
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev"><i class="fa-solid fa-chevron-left"></i></button>
+        <img id="lightbox-img" src="" alt="Expanded View">
+        <button class="lightbox-nav lightbox-next" id="lightboxNext"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
 
-    <footer class="footer">
-
-        <h2>MWAVULI PHOTOGRAPHY</h2>
-
-        <p>Capturing Moments. Creating Memories.</p>
-
-        <div class="footer-links">
-            <a href="#home">Home</a>
-            <a href="#about">About</a>
-            <a href="#portfolio">Portfolio</a>
-            <a href="#services">Services</a>
-            <a href="#contact">Contact</a>
-
-        </div>
-
-        <div class="social-icons">
-
-            <a href="#"><i class="fa-brands fa-instagram"></i></a>
-
-
-            <a href="#"><i class="fa-brands fa-tiktok"></i></a>
-
-            <a href="https://wa.me/254769578232" target="_blank">
-                <i class="fa-brands fa-whatsapp"></i>
-            </a>
-
-        </div>
-
-        <p>&copy; 2026 MWAVULI PHOTOGRAPHY. All Rights Reserved.</p>
-
+    <footer>
+        <p>&copy; 2026 MWAVULI PHOTOGRAPHY. All rights reserved.</p>
     </footer>
-    <script src="script.js?v=2"></script>
-    <script src="gallery.js?v=2"></script>
+
+    <script src="script.js?v=21"></script>
+    <script src="gallery.js?v=21"></script>
     <script>
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("sw.js").catch(() => { });
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("/sw.js").catch(() => {});
+            });
         }
     </script>
-
 </body>
-
 </html>

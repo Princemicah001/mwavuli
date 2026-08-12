@@ -112,6 +112,15 @@ if (projectCollectionsEl || generalGallery) {
             return;
         }
 
+        // Preload visible image thumbnails for instant rendering
+        const thumbUrls = photos.slice(0, 12).map(p => cldUrl(mediaUrl(p.thumbnail || p.file), "w_640,c_limit,q_auto,f_auto"));
+        thumbUrls.forEach(url => {
+            if (url && !/\.(mp4|mov|webm|ogv|m4v)(\?.*)?$/i.test(url)) {
+                const img = new Image();
+                img.src = url;
+            }
+        });
+
         // Build the whole grid as one string and assign it once — appending via
         // innerHTML += per item forces a full re-parse every iteration, which is
         // what made the gallery feel slow with many images.
@@ -133,9 +142,11 @@ if (projectCollectionsEl || generalGallery) {
                 const poster = photo.thumbnail
                     ? cldUrl(mediaUrl(photo.thumbnail), "w_640,c_limit,q_auto,f_auto")
                     : "";
-                media = `<video autoplay muted loop playsinline preload="metadata"${poster ? ` poster="${poster}"` : ""} draggable="false" src="${fullUrl}"></video>`;
+                media = `<video autoplay muted loop playsinline webkit-playsinline preload="auto"${poster ? ` poster="${poster}"` : ""} draggable="false" src="${fullUrl}"></video>`;
             } else {
-                media = `<img src="${thumbUrl}" srcset="${srcset}" sizes="(max-width:600px) 100vw, (max-width:1024px) 50vw, 33vw" alt="${escapeHtml(photo.title)}" data-full="${fullUrl}" loading="lazy" decoding="async" draggable="false">`;
+                const loadAttr = i < 6 ? 'eager' : 'lazy';
+                const fetchPrio = i < 3 ? 'high' : 'auto';
+                media = `<img src="${thumbUrl}" srcset="${srcset}" sizes="(max-width:600px) 100vw, (max-width:1024px) 50vw, 33vw" alt="${escapeHtml(photo.title)}" data-full="${fullUrl}" loading="${loadAttr}" fetchpriority="${fetchPrio}" decoding="async" draggable="false">`;
             }
 
             return `
@@ -146,10 +157,26 @@ if (projectCollectionsEl || generalGallery) {
 
         generalGallery.innerHTML = parts.join("");
 
-        // Graceful muted autoplay: play videos only while they're on screen so
-        // the page never chokes on many simultaneous streams.
+        // Graceful muted autoplay: play videos only while they're on screen
         const videos = generalGallery.querySelectorAll(".gallery-item video");
-        const playVideo = (v) => { v.muted = true; v.play().catch(() => {}); };
+        const playVideo = (v) => {
+            v.muted = true;
+            v.playsInline = true;
+            const p = v.play();
+            if (p !== undefined) {
+                p.catch(() => {
+                    const enablePlay = () => {
+                        v.play().catch(() => {});
+                        document.removeEventListener('touchstart', enablePlay);
+                        document.removeEventListener('click', enablePlay);
+                        document.removeEventListener('scroll', enablePlay);
+                    };
+                    document.addEventListener('touchstart', enablePlay, { once: true });
+                    document.addEventListener('click', enablePlay, { once: true });
+                    document.addEventListener('scroll', enablePlay, { once: true, passive: true });
+                });
+            }
+        };
         if ("IntersectionObserver" in window) {
             const io = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
@@ -157,7 +184,7 @@ if (projectCollectionsEl || generalGallery) {
                     if (e.isIntersecting) playVideo(v);
                     else v.pause();
                 });
-            }, { threshold: 0.25 });
+            }, { threshold: 0.15 });
             videos.forEach(v => io.observe(v));
         } else {
             videos.forEach(playVideo);

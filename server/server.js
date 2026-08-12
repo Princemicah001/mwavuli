@@ -43,7 +43,13 @@ app.use(express.json());
 
 const path = require("path");
 const uploadsPath = path.join(__dirname, "uploads");
-app.use("/uploads", express.static(uploadsPath));
+app.use("/uploads", express.static(uploadsPath, {
+    maxAge: '1y',
+    immutable: true,
+    setHeaders: (res) => {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    }
+}));
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/hero", heroRoutes);
@@ -58,11 +64,14 @@ app.get("/api/health", (req, res) => {
     res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, "..")));
-} else {
-    app.use(express.static(path.join(__dirname, "..")));
-}
+app.use(express.static(path.join(__dirname, ".."), {
+    maxAge: '1d',
+    setHeaders: (res, filePath) => {
+        if (/\.(jpg|jpeg|png|gif|webp|avif|svg|mp4|webm|woff2?|ttf|eot|css|js)$/i.test(filePath)) {
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        }
+    }
+}));
 
 const PORT = process.env.PORT || 5000;
 

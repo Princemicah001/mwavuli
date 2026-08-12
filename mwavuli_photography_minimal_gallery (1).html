@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Mwavuli</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <meta name="theme-color" content="#F7F7F9">
+
+    <!-- Minimalist Typography: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #F7F7F9; /* Clean off-white */
+            --surface-color: #FFFFFF;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --accent: #000000;
+            --purple-dot: #8b5cf6; /* Matches the UI reference image */
+            --radius-img: 24px;
+            --radius-card: 20px;
+            --radius-btn: 9999px; /* Pill shape */
+            --max-width: 1400px;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1); /* Apple-like smooth easing */
+            --spring: cubic-bezier(0.25, 1, 0.5, 1); /* Bouncy smooth easing */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 5%;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: transform 0.3s var(--ease);
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-main);
+            opacity: 0.7;
+            transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+            display: inline-block;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            opacity: 1;
+            font-weight: 600;
+            transform: translateY(-2px);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: transform 0.2s var(--ease);
+        }
+
+        .hero {
+            padding: 160px 5% 80px;
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+            min-height: 80vh;
+        }
+
+        .hero-text {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .hero-text h1 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .hero-text p {
+            font-size: clamp(15px, 2vw, 17px);
+            color: var(--text-muted);
+            margin: 0 auto 32px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* 3D Carousel UI */
+        .carousel-3d-container {
+            width: 100%;
+            max-width: 1100px;
+            position: relative;
+        }
+
+        .carousel-3d-track {
+            position: relative;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-3d-item {
+            position: absolute;
+            width: 600px;
+            max-width: 75vw;
+            aspect-ratio: 16/10;
+            border-radius: var(--radius-img);
+            overflow: hidden;
+            transition: transform 0.6s var(--spring), opacity 0.6s var(--spring), filter 0.6s var(--spring);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            will-change: transform, opacity, filter;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .carousel-3d-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        /* 3D State Classes */
+        .carousel-3d-item.active {
+            transform: translateX(0) scale(1);
+            z-index: 5;
+            opacity: 1;
+            filter: brightness(1);
+        }
+
+        .carousel-3d-item.prev-1 {
+            transform: translateX(-40%) scale(0.85);
+            z-index: 4;
+            opacity: 0.9;
+            filter: brightness(0.85);
+        }
+
+        .carousel-3d-item.next-1 {
+            transform: translateX(40%) scale(0.85);
+            z-index: 4;
+            opacity: 0.9;
+            filter: brightness(0.85);
+        }
+
+        .carousel-3d-item.prev-2 {
+            transform: translateX(-75%) scale(0.7);
+            z-index: 3;
+            opacity: 0.6;
+            filter: brightness(0.6);
+        }
+
+        .carousel-3d-item.next-2 {
+            transform: translateX(75%) scale(0.7);
+            z-index: 3;
+            opacity: 0.6;
+            filter: brightness(0.6);
+        }
+
+        .carousel-3d-item.hidden {
+            transform: translateX(0) scale(0.5);
+            z-index: 1;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 3D Carousel Controls */
+        .carousel-3d-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .carousel-3d-btn {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            color: #9ca3af; /* muted gray */
+            cursor: pointer;
+            padding: 8px;
+            transition: color 0.3s var(--ease), transform 0.3s var(--ease);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-3d-btn:hover {
+            color: var(--text-main);
+            transform: scale(1.15);
+        }
+        
+        .carousel-3d-btn:active {
+            transform: scale(0.9);
+        }
+
+        .carousel-3d-dots {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .carousel-3d-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d1d5db; /* Light gray */
+            cursor: pointer;
+            transition: all 0.3s var(--spring);
+        }
+
+        .carousel-3d-dot.active {
+            background: var(--purple-dot);
+            transform: scale(1.3);
+        }
+
+        .gallery-container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 20px 5% 100px;
+        }
+
+        .view-controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .segmented-control {
+            display: inline-flex;
+            background: #EBEBEF;
+            padding: 6px;
+            border-radius: var(--radius-btn);
+            position: relative;
+        }
+
+        .segment-btn {
+            background: transparent;
+            border: none;
+            padding: 12px 32px;
+            border-radius: var(--radius-btn);
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+            transition: color 0.3s var(--ease);
+        }
+
+        .segment-btn.active {
+            color: var(--text-main);
+        }
+
+        .segment-indicator {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            height: calc(100% - 12px);
+            background: var(--surface-color);
+            border-radius: var(--radius-btn);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            z-index: 1;
+            transition: transform 0.4s var(--ease), width 0.4s var(--ease);
+        }
+
+        .albums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .album-card {
+            background: var(--surface-color);
+            border-radius: var(--radius-card);
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+        }
+
+        .album-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .album-card:active {
+            transform: scale(0.98);
+        }
+
+        .album-cover {
+            width: 100%;
+            aspect-ratio: 4/3;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .album-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s var(--ease);
+        }
+
+        .album-card:hover .album-cover img {
+            transform: scale(1.08);
+        }
+
+        .album-info {
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .album-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .album-count {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: var(--bg-color);
+            padding: 6px 14px;
+            border-radius: var(--radius-btn);
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s var(--ease);
+        }
+
+        .back-btn:hover {
+            transform: translateX(-4px);
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            grid-auto-flow: dense;
+        }
+
+        .photo-item {
+            position: relative;
+            border-radius: var(--radius-card);
+            overflow: hidden;
+            cursor: pointer;
+            background: #eaeaea; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+            transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+        }
+
+        .photo-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        .photo-item:active {
+            transform: scale(0.96);
+        }
+
+        .photo-item.tall { grid-row: span 2; }
+        .photo-item.wide { grid-column: span 2; }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s var(--ease);
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(247, 247, 249, 0.95);
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s var(--ease);
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 85vh;
+            border-radius: var(--radius-img);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            transform: scale(0.9);
+            transition: transform 0.4s var(--ease);
+        }
+
+        .lightbox.active img {
+            transform: scale(1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 32px;
+            color: var(--text-main);
+            cursor: pointer;
+            background: var(--surface-color);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.2s var(--ease);
+        }
+
+        .lightbox-close:hover { transform: scale(1.1); }
+        .lightbox-close:active { transform: scale(0.9); }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--surface-color);
+            color: var(--text-main);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s var(--ease), background 0.3s var(--ease);
+        }
+
+        .lightbox-nav:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .lightbox-nav:active {
+            transform: translateY(-50%) scale(0.9);
+        }
+
+        .lightbox-prev { left: 40px; }
+        .lightbox-next { right: 40px; }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile Sidebar */
+        .mobile-sidebar {
+            position: fixed;
+            inset: 0;
+            z-index: 2100;
+            pointer-events: none;
+        }
+
+        .mobile-sidebar.open { pointer-events: auto; }
+        
+        .sidebar-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(247, 247, 249, 0.8);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.4s var(--ease);
+        }
+
+        .mobile-sidebar.open .sidebar-backdrop { opacity: 1; }
+
+        .sidebar-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: min(320px, 80vw);
+            height: 100%;
+            background: var(--surface-color);
+            transform: translateX(100%);
+            transition: transform 0.5s var(--ease);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -20px 0 40px rgba(0,0,0,0.05);
+        }
+
+        .mobile-sidebar.open .sidebar-panel { transform: translateX(0); }
+
+        .sidebar-close {
+            align-self: flex-end;
+            font-size: 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-main);
+            margin-bottom: 40px;
+        }
+
+        .sidebar-panel ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-panel ul a {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: transform 0.2s var(--ease);
+            display: inline-block;
+        }
+        
+        .sidebar-panel ul a:active { transform: scale(0.95); }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 900px) {
+            .nav-links { display: none; }
+            .nav-toggle { display: block; }
+            
+            .hero { padding-top: 120px; gap: 30px; }
+            .carousel-3d-track { height: 280px; }
+            .carousel-3d-item { width: 80vw; }
+            
+            .carousel-3d-item.prev-1 { transform: translateX(-25%) scale(0.85); }
+            .carousel-3d-item.next-1 { transform: translateX(25%) scale(0.85); }
+            .carousel-3d-item.prev-2, .carousel-3d-item.next-2 { opacity: 0; pointer-events: none; }
+
+            .photos-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+            .albums-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+            
+            .lightbox-nav { width: 44px; height: 44px; font-size: 16px; }
+            .lightbox-prev { left: 10px; }
+            .lightbox-next { right: 10px; }
+            .lightbox-close { top: 20px; right: 20px; width: 40px; height: 40px; font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&q=80" alt="Avatar">
+                mwavuli.
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="gallery.html" class="active">Portfolio</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-backdrop"></div>
+        <div class="sidebar-panel">
+            <button class="sidebar-close" aria-label="Close menu">&times;</button>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="gallery.html">Portfolio</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <section class="hero reveal">
+        <div class="hero-text">
+            <h1>Simple Image Carousel</h1>
+            <p>Mwavuli Photography uses natural light and an artistic eye to match your unique personality with breathtaking, timeless imagery. Say goodbye to awkward poses.</p>
+        </div>
+        
+        <div class="carousel-3d-container">
+            <div class="carousel-3d-track" id="c3d-track">
+                <!-- 5 Core Landscape Assets for the Cover Flow -->
+                <div class="carousel-3d-item"><img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1000&q=80" alt="Landscape 1"></div>
+                <div class="carousel-3d-item"><img src="https://images.unsplash.com/photo-1472396961693-142e6e269027?w=1000&q=80" alt="Landscape 2"></div>
+                <div class="carousel-3d-item"><img src="https://images.unsplash.com/photo-1502472581566-8ac52a65a396?w=1000&q=80" alt="Landscape 3"></div>
+                <div class="carousel-3d-item"><img src="https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=1000&q=80" alt="Landscape 4"></div>
+                <div class="carousel-3d-item"><img src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=1000&q=80" alt="Landscape 5"></div>
+            </div>
+            
+            <div class="carousel-3d-controls">
+                <button class="carousel-3d-btn" id="c3d-prev"><i class="fa-solid fa-arrow-left-long"></i></button>
+                <div class="carousel-3d-dots" id="c3d-dots">
+                    <!-- Dots injected via JS based on item count -->
+                </div>
+                <button class="carousel-3d-btn" id="c3d-next"><i class="fa-solid fa-arrow-right-long"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" class="gallery-container reveal">
+        
+        <!-- Segmented Controls for microinteractions -->
+        <div class="view-controls">
+            <div class="segmented-control" id="segmentedControl">
+                <div class="segment-indicator" id="segmentIndicator"></div>
+                <button class="segment-btn active" data-target="albums">Albums</button>
+                <button class="segment-btn" data-target="photos">All Photos</button>
+            </div>
+        </div>
+
+        <!-- Dynamic Container for Albums or Photos -->
+        <div id="dynamicContainer">
+            <!-- Content injected via JS -->
+        </div>
+
+    </section>
+
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev"><i class="fa-solid fa-chevron-left"></i></button>
+        <img id="lightbox-img" src="" alt="Expanded View">
+        <button class="lightbox-nav lightbox-next" id="lightboxNext"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- DATA STRUCTURE ---
+            const albums = [
+                { id: 'weddings', title: "Weddings & Elopements", count: 8, cover: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80" },
+                { id: 'portraits', title: "Studio Portraits", count: 6, cover: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80" },
+                { id: 'editorial', title: "Vogue Africa Editorial", count: 4, cover: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80" },
+                { id: 'couples', title: "Couples & Engagement", count: 5, cover: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80" }
+            ];
+
+            const photos = [
+                // Weddings
+                { albumId: 'weddings', src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80", class: "" },
+                { albumId: 'weddings', src: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200&q=80", class: "wide" },
+                { albumId: 'weddings', src: "https://images.unsplash.com/photo-1543854591-628a7e025114?w=800&q=80", class: "tall" },
+                { albumId: 'weddings', src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80", class: "" },
+                // Portraits
+                { albumId: 'portraits', src: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80", class: "tall" },
+                { albumId: 'portraits', src: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&q=80", class: "" },
+                { albumId: 'portraits', src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80", class: "" },
+                // Editorial
+                { albumId: 'editorial', src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=80", class: "" },
+                { albumId: 'editorial', src: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80", class: "tall" },
+                { albumId: 'editorial', src: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=1200&q=80", class: "wide" },
+                // Couples
+                { albumId: 'couples', src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80", class: "" },
+                { albumId: 'couples', src: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=1200&q=80", class: "wide" },
+            ];
+
+            const container = document.getElementById('dynamicContainer');
+            const segmentBtns = document.querySelectorAll('.segment-btn');
+            const indicator = document.getElementById('segmentIndicator');
+            
+            // --- SCROLL REVEAL ANIMATION ---
+            const observerOptions = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const observeElements = () => {
+                document.querySelectorAll('.reveal-item').forEach((el, index) => {
+                    el.style.transitionDelay = `${index * 0.05}s`;
+                    observer.observe(el);
+                });
+            };
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+            // --- SEGMENTED CONTROL LOGIC ---
+            const updateIndicator = (activeBtn) => {
+                indicator.style.width = `${activeBtn.offsetWidth}px`;
+                indicator.style.transform = `translateX(${activeBtn.offsetLeft - 6}px)`; // 6px padding offset
+            };
+
+            updateIndicator(document.querySelector('.segment-btn.active'));
+            window.addEventListener('resize', () => updateIndicator(document.querySelector('.segment-btn.active')));
+
+            segmentBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    segmentBtns.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    updateIndicator(e.target);
+                    
+                    const targetView = e.target.getAttribute('data-target');
+                    if (targetView === 'albums') renderAlbums();
+                    else renderAllPhotos();
+                });
+            });
+
+            // --- RENDERING VIEWS ---
+            const renderAlbums = () => {
+                container.innerHTML = `<div class="albums-grid"></div>`;
+                const grid = container.querySelector('.albums-grid');
+                
+                albums.forEach(album => {
+                    const card = document.createElement('div');
+                    card.className = 'album-card reveal-item reveal';
+                    card.innerHTML = `
+                        <div class="album-cover">
+                            <img src="${album.cover}" alt="${album.title}" loading="lazy">
+                        </div>
+                        <div class="album-info">
+                            <div class="album-title">${album.title}</div>
+                            <div class="album-count">${album.count} photos</div>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => renderAlbumPhotos(album));
+                    grid.appendChild(card);
+                });
+                observeElements();
+            };
+
+            const renderAllPhotos = () => {
+                renderPhotos(photos);
+            };
+
+            const renderAlbumPhotos = (album) => {
+                const albumPhotos = photos.filter(p => p.albumId === album.id);
+                renderPhotos(albumPhotos, album.title);
+            };
+
+            let currentLightboxImages = [];
+            let currentImageIndex = 0;
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+
+            const renderPhotos = (photoArray, albumTitle = null) => {
+                if (albumTitle) {
+                    segmentBtns.forEach(b => b.classList.remove('active'));
+                    indicator.style.width = '0';
+                }
+
+                let html = '';
+                if (albumTitle) {
+                    html += `
+                        <div class="header-actions reveal-item reveal">
+                            <button class="back-btn" onclick="document.querySelector('[data-target=\\'albums\\']').click()">
+                                <i class="fa-solid fa-arrow-left"></i> Back to Albums
+                            </button>
+                            <h2>${albumTitle}</h2>
+                        </div>
+                    `;
+                }
+                
+                html += `<div class="photos-grid"></div>`;
+                container.innerHTML = html;
+                const grid = container.querySelector('.photos-grid');
+                currentLightboxImages = photoArray.map(p => p.src);
+
+                photoArray.forEach((photo, index) => {
+                    const item = document.createElement('div');
+                    item.className = `photo-item reveal-item reveal ${photo.class}`;
+                    item.innerHTML = `<img src="${photo.src}" alt="Gallery Image" loading="lazy">`;
+                    item.addEventListener('click', () => openLightbox(index));
+                    grid.appendChild(item);
+                });
+                observeElements();
+            };
+
+            // --- LIGHTBOX LOGIC ---
+            const openLightbox = (index) => {
+                currentImageIndex = index;
+                lightboxImg.src = currentLightboxImages[currentImageIndex];
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeLightbox = () => {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            const showPrev = (e) => {
+                e.stopPropagation();
+                currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : currentLightboxImages.length - 1;
+                lightboxImg.src = currentLightboxImages[currentImageIndex];
+            };
+
+            const showNext = (e) => {
+                e.stopPropagation();
+                currentImageIndex = (currentImageIndex < currentLightboxImages.length - 1) ? currentImageIndex + 1 : 0;
+                lightboxImg.src = currentLightboxImages[currentImageIndex];
+            };
+
+            document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+            document.getElementById('lightboxPrev').addEventListener('click', showPrev);
+            document.getElementById('lightboxNext').addEventListener('click', showNext);
+            lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+
+            // --- MOBILE SIDEBAR ---
+            const navToggle = document.getElementById('navToggle');
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            const toggleMenu = () => mobileSidebar.classList.toggle('open');
+            navToggle.addEventListener('click', toggleMenu);
+            document.querySelector('.sidebar-close').addEventListener('click', toggleMenu);
+            document.querySelector('.sidebar-backdrop').addEventListener('click', toggleMenu);
+
+            // --- 3D CAROUSEL COVER FLOW LOGIC ---
+            const c3dItems = document.querySelectorAll('.carousel-3d-item');
+            const dotsContainer = document.getElementById('c3d-dots');
+            const totalC3d = c3dItems.length;
+            let currentC3dIndex = 2; // Start with the middle item active
+            let c3dAutoplay;
+
+            // Generate dots dynamically
+            for(let i=0; i<totalC3d; i++){
+                const dot = document.createElement('span');
+                dot.className = 'carousel-3d-dot';
+                dot.dataset.index = i;
+                dot.addEventListener('click', () => jumpToC3d(i));
+                dotsContainer.appendChild(dot);
+            }
+            const c3dDots = document.querySelectorAll('.carousel-3d-dot');
+
+            const updateC3d = () => {
+                c3dItems.forEach((item, i) => {
+                    item.className = 'carousel-3d-item'; // reset all classes
+                    
+                    let diff = (i - currentC3dIndex) % totalC3d;
+                    if (diff < 0) diff += totalC3d; // handle negative modulo
+                    
+                    // Normalize difference to -2, -1, 0, 1, 2
+                    if (diff > Math.floor(totalC3d / 2)) {
+                        diff -= totalC3d;
+                    }
+
+                    if (diff === 0) item.classList.add('active');
+                    else if (diff === -1) item.classList.add('prev-1');
+                    else if (diff === 1) item.classList.add('next-1');
+                    else if (diff === -2) item.classList.add('prev-2');
+                    else if (diff === 2) item.classList.add('next-2');
+                    else item.classList.add('hidden');
+                });
+
+                c3dDots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentC3dIndex);
+                });
+            };
+
+            const nextC3d = () => {
+                currentC3dIndex = (currentC3dIndex + 1) % totalC3d;
+                updateC3d();
+            };
+
+            const prevC3d = () => {
+                currentC3dIndex = (currentC3dIndex - 1 + totalC3d) % totalC3d;
+                updateC3d();
+            };
+
+            const jumpToC3d = (index) => {
+                currentC3dIndex = index;
+                updateC3d();
+                resetC3dAutoplay();
+            };
+
+            const startC3dAutoplay = () => {
+                c3dAutoplay = setInterval(nextC3d, 4000);
+            };
+
+            const resetC3dAutoplay = () => {
+                clearInterval(c3dAutoplay);
+                startC3dAutoplay();
+            };
+
+            // Event Listeners for Controls
+            document.getElementById('c3d-next').addEventListener('click', () => {
+                nextC3d();
+                resetC3dAutoplay();
+            });
+            document.getElementById('c3d-prev').addEventListener('click', () => {
+                prevC3d();
+                resetC3dAutoplay();
+            });
+            
+            // Allow clicking side items to bring them forward
+            c3dItems.forEach((item, i) => {
+                item.addEventListener('click', () => jumpToC3d(i));
+            });
+
+            // Pause on hover
+            const c3dContainer = document.querySelector('.carousel-3d-container');
+            c3dContainer.addEventListener('mouseenter', () => clearInterval(c3dAutoplay));
+            c3dContainer.addEventListener('mouseleave', startC3dAutoplay);
+
+            // Initialize views
+            updateC3d();
+            startC3dAutoplay();
+            renderAlbums();
+        });
+    </script>
+</body>
+</html>

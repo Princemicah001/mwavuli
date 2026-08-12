@@ -65,7 +65,7 @@
                     const poster = photo.thumbnail
                         ? cldUrl(mediaUrl(photo.thumbnail), "w_640,c_limit,q_auto,f_auto")
                         : "";
-                    media = `<video autoplay muted loop playsinline preload="metadata"${poster ? ` poster="${poster}"` : ""} draggable="false" src="${fullUrl}"></video>`;
+                    media = `<video autoplay muted loop playsinline webkit-playsinline preload="auto"${poster ? ` poster="${poster}"` : ""} draggable="false" src="${fullUrl}"></video>`;
                 } else {
                     media = `<img src="${thumbUrl}" alt="${photo.title}" data-full="${fullUrl}" loading="lazy" decoding="async" draggable="false">`;
                 }
@@ -87,7 +87,24 @@
 
             // Graceful muted autoplay: only play videos while on screen.
             const videos = gallery.querySelectorAll(".gallery-item video");
-            const playVideo = (v) => { v.muted = true; v.play().catch(() => {}); };
+            const playVideo = (v) => {
+                v.muted = true;
+                v.playsInline = true;
+                const p = v.play();
+                if (p !== undefined) {
+                    p.catch(() => {
+                        const enablePlay = () => {
+                            v.play().catch(() => {});
+                            document.removeEventListener('touchstart', enablePlay);
+                            document.removeEventListener('click', enablePlay);
+                            document.removeEventListener('scroll', enablePlay);
+                        };
+                        document.addEventListener('touchstart', enablePlay, { once: true });
+                        document.addEventListener('click', enablePlay, { once: true });
+                        document.addEventListener('scroll', enablePlay, { once: true, passive: true });
+                    });
+                }
+            };
             if ("IntersectionObserver" in window) {
                 const io = new IntersectionObserver((entries) => {
                     entries.forEach(e => {
@@ -95,7 +112,7 @@
                         if (e.isIntersecting) playVideo(v);
                         else v.pause();
                     });
-                }, { threshold: 0.25 });
+                }, { threshold: 0.15 });
                 videos.forEach(v => io.observe(v));
             } else {
                 videos.forEach(playVideo);

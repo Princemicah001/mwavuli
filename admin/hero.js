@@ -1,4 +1,5 @@
-const { API, apiFetch } = window.adminAuth;
+(function () {
+    const { API, apiFetch } = window.adminAuth;
 
 // Cloudinary URLs are stored as-is; legacy local filenames resolve to /uploads.
 const mediaUrl = (f) => (f && /^https?:\/\//.test(f)) ? f : (API + "/uploads/" + f);
@@ -97,12 +98,17 @@ async function loadHeroData() {
 async function loadHero() {
     try {
         const data = await loadHeroData();
+        if (!data || !data.success) {
+            throw new Error(data?.message || "Failed to load hero data");
+        }
         heroEnabled.checked = data.enabled;
         heroAutoplay.checked = data.autoplay;
         heroInterval.value = data.interval;
-        renderSlides(data.slides);
+        renderSlides(Array.isArray(data.slides) ? data.slides : []);
     } catch (err) {
         console.error("Failed to load hero", err);
+        setMsg(heroMsg, err.message || "Could not load slides. Check console for details.", "error");
+        renderSlides([]);
     }
 }
 
@@ -281,3 +287,4 @@ function hideProgress() {
 }
 
 loadHero();
+})();
