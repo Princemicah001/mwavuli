@@ -1017,28 +1017,109 @@ footer {
     background: var(--surface-color);
 }
 
-/* Responsive Breakpoints */
+/* Responsive Breakpoints & Mobile Touch Scaling */
 @media (max-width: 900px) {
+    header { padding: 20px 4%; }
+    .logo img { height: 42px; }
     .nav-links { display: none; }
-    .nav-toggle { display: block; }
+    .nav-toggle { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.04); }
     
-    .about-container { grid-template-columns: 1fr; padding: 30px; gap: 30px; }
-    .about-stats { grid-template-columns: repeat(3, 1fr); }
+    .about-container { grid-template-columns: 1fr; padding: 36px 28px; gap: 32px; border-radius: 28px; }
+    .about-stats { grid-template-columns: repeat(3, 1fr); gap: 12px; }
 
-    .hero { padding-top: 120px; gap: 30px; }
-    .carousel-3d-track { height: 280px; }
-    .carousel-3d-item { width: 80vw; }
+    .hero { padding: 110px 4% 40px; gap: 28px; min-height: auto; }
+    .carousel-3d-track { height: 320px; }
+    .carousel-3d-item { width: 82vw; aspect-ratio: 16/10; border-radius: 20px; }
     
-    .carousel-3d-item.prev-1 { transform: translateX(-25%) scale(0.85); }
-    .carousel-3d-item.next-1 { transform: translateX(25%) scale(0.85); }
+    .carousel-3d-item.prev-1 { transform: translateX(-28%) translateY(10px) rotate(-5deg) scale(0.86); }
+    .carousel-3d-item.next-1 { transform: translateX(28%) translateY(10px) rotate(5deg) scale(0.86); }
     .carousel-3d-item.prev-2, .carousel-3d-item.next-2 { opacity: 0; pointer-events: none; }
 
-    .photos-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-    .albums-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    .photos-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+    .albums-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
     
-    .lightbox-nav { width: 44px; height: 44px; font-size: 16px; }
-    .lightbox-prev { left: 10px; }
-    .lightbox-next { right: 10px; }
-    .lightbox-close { top: 20px; right: 20px; width: 40px; height: 40px; font-size: 24px; }
-    .book-now-fab { bottom: 20px; right: 20px; padding: 14px 22px; font-size: 14px; }
+    .lightbox-nav { width: 46px; height: 46px; font-size: 16px; }
+    .lightbox-prev { left: 14px; }
+    .lightbox-next { right: 14px; }
+    .lightbox-close { top: 18px; right: 18px; width: 42px; height: 42px; font-size: 24px; }
+    .book-now-fab { bottom: 24px; right: 24px; padding: 14px 22px; font-size: 14px; }
+}
+
+@media (max-width: 600px) {
+    header { padding: 16px 4%; }
+    .logo img { height: 36px; max-width: 180px; }
+    
+    .hero { padding: 96px 4% 30px; gap: 24px; }
+    .hero-text h1 { font-size: clamp(26px, 7.5vw, 36px); letter-spacing: -0.8px; margin-bottom: 14px; }
+    .highlight-handwritten { font-size: 1.05em; padding: 2px 12px; border-radius: 10px; margin-left: 2px; }
+    .hero-text p { font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+    
+    .carousel-3d-track { height: 250px; }
+    .carousel-3d-item { width: 88vw; aspect-ratio: 16/11; border-radius: 16px; }
+    .carousel-3d-item.prev-1 { transform: translateX(-18%) translateY(8px) rotate(-3deg) scale(0.88); }
+    .carousel-3d-item.next-1 { transform: translateX(18%) translateY(8px) rotate(3deg) scale(0.88); }
+    .carousel-3d-controls { gap: 16px; margin-top: 20px; }
+
+    .segmented-control { width: 100%; max-width: 340px; }
+    .segment-btn { flex: 1; padding: 10px 14px; font-size: 13px; text-align: center; }
+
+    .gallery-container { padding: 10px 4% 60px; }
+    .view-controls { margin-bottom: 30px; }
+    .albums-grid { grid-template-columns: 1fr; gap: 18px; }
+    .album-info { padding: 18px 20px; }
+    .album-title { font-size: 16px; }
+    
+    .photos-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .photo-item { border-radius: 14px; }
+    .photo-item.wide { grid-column: span 2; }
+    .photo-item.tall { grid-row: span 2; }
+
+    .about-section, .services-section, .contact-section { padding: 50px 4%; }
+    .about-container { padding: 24px 18px; border-radius: 20px; gap: 20px; }
+    .about-image-wrap { aspect-ratio: 4/4.5; border-radius: 18px; }
+    .about-badge { bottom: 12px; left: 12px; padding: 10px 14px; border-radius: 14px; }
+    .badge-number { font-size: 22px; }
+    .badge-text { font-size: 11px; }
+    
+    .about-content h2 { font-size: 24px; }
+    .about-content p { font-size: 14px; line-height: 1.6; }
+    .about-stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat-card { padding: 12px 6px; border-radius: 14px; }
+    .stat-card h3 { font-size: 18px; }
+    .stat-card p { font-size: 10px; }
+
+    .btn-about-cta { width: 100%; justify-content: center; padding: 12px 20px; font-size: 14px; }
+
+    .section-head { margin-bottom: 32px; }
+    .section-head h2 { font-size: 26px; }
+    .section-head p { font-size: 14px; }
+
+    .services-grid { grid-template-columns: 1fr; gap: 16px; }
+    .service-box { padding: 24px 20px; border-radius: 18px; }
+
+    .contact-card { padding: 24px 18px; border-radius: 18px; }
+    .contact-form input, .contact-form textarea, .contact-form select { padding: 12px 14px; font-size: 14px; border-radius: 12px; }
+    .submit-btn { width: 100%; padding: 14px 20px; font-size: 15px; }
+
+    .book-now-fab { bottom: 16px; right: 16px; padding: 12px 20px; font-size: 13px; gap: 8px; }
+    .book-now-fab i { font-size: 15px; }
+
+    .lightbox img { max-width: 95vw; max-height: 75vh; border-radius: 14px; }
+    .lightbox-close { top: 12px; right: 12px; width: 36px; height: 36px; font-size: 20px; }
+    .lightbox-nav { width: 38px; height: 38px; font-size: 14px; }
+    .lightbox-prev { left: 8px; }
+    .lightbox-next { right: 8px; }
+}
+
+@media (max-width: 400px) {
+    .logo img { height: 30px; max-width: 150px; }
+    .hero-text h1 { font-size: 24px; }
+    .carousel-3d-track { height: 210px; }
+    .carousel-3d-item { width: 92vw; aspect-ratio: 16/11; }
+    .photos-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .about-stats { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+    .stat-card h3 { font-size: 16px; }
+    .stat-card p { font-size: 9px; }
+    .book-now-fab span { font-size: 12px; }
+    .book-now-fab { padding: 10px 16px; }
 }
