@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mwavuli-media-cache-v2';
+const CACHE_NAME = 'mwavuli-media-cache-v3';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -12,7 +12,8 @@ const STATIC_ASSETS = [
     '/projects.js',
     '/lightbox.js',
     '/icon.svg',
-    '/manifest.json'
+    '/manifest.json',
+    '/assets/audio/popup.mp3'
 ];
 
 // Install event - precache essential static shell
@@ -62,7 +63,7 @@ self.addEventListener('fetch', (event) => {
         url.hostname.includes('gstatic.com') ||
         url.pathname.includes('/uploads/') ||
         url.pathname.includes('/assets/') ||
-        /\.(jpg|jpeg|png|gif|webp|avif|svg|mp4|webm|mov|m4v|woff2?|ttf|css|js)$/i.test(url.pathname);
+        /\.(jpg|jpeg|png|gif|webp|avif|svg|mp4|webm|mov|m4v|mp3|wav|ogg|woff2?|ttf|css|js)$/i.test(url.pathname);
 
     if (isMediaOrAsset) {
         event.respondWith(
