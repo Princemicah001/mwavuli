@@ -4,13 +4,13 @@
    ========================================================================== */
 
 :root {
-    --bg-color: #F8F9FC; /* Crisp, high-visibility solid off-white */
+    --bg-color: #FAF8F5; /* Warm, comfortable, organic ivory-beige background */
     --surface-color: #FFFFFF;
     --text-main: #0F172A; /* Deep high-contrast obsidian slate */
-    --text-muted: #475569; /* Crisp, readable slate gray */
+    --text-muted: #475569; /* Crisp slate gray */
     --accent: #0F172A;
     --purple-dot: #7C3AED;
-    --border-color: #E2E8F0;
+    --border-color: #EAE6DF;
     --border-hover: #C084FC;
     --radius-img: 24px;
     --radius-card: 22px;
@@ -44,14 +44,55 @@ body {
     overflow-x: hidden !important;
     position: relative;
     font-family: var(--font-main);
-    background-color: #F8F9FC;
-    background-image: 
-        radial-gradient(at 15% 10%, rgba(221, 214, 254, 0.2) 0px, transparent 40%),
-        radial-gradient(at 85% 25%, rgba(251, 207, 232, 0.2) 0px, transparent 40%);
-    background-attachment: fixed;
+    background-color: #FAF8F5;
     color: var(--text-main);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+}
+
+/* Tangible, Comforting Warm Ambient Aurora Glow */
+body::before {
+    content: "";
+    position: fixed;
+    top: -12%;
+    left: -8%;
+    width: 65vw;
+    height: 65vw;
+    max-width: 950px;
+    max-height: 950px;
+    background: radial-gradient(circle, rgba(251, 207, 232, 0.38) 0%, rgba(221, 214, 254, 0.28) 45%, rgba(253, 230, 138, 0.18) 70%, transparent 85%);
+    filter: blur(85px);
+    z-index: -2;
+    pointer-events: none;
+    animation: auroraFloat1 20s ease-in-out infinite alternate;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    bottom: -8%;
+    right: -8%;
+    width: 70vw;
+    height: 70vw;
+    max-width: 1050px;
+    max-height: 1050px;
+    background: radial-gradient(circle, rgba(253, 230, 138, 0.32) 0%, rgba(251, 207, 232, 0.3) 40%, rgba(221, 214, 254, 0.2) 68%, transparent 85%);
+    filter: blur(95px);
+    z-index: -2;
+    pointer-events: none;
+    animation: auroraFloat2 24s ease-in-out infinite alternate;
+}
+
+@keyframes auroraFloat1 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(50px, 35px) scale(1.08); }
+    100% { transform: translate(-30px, 60px) scale(0.94); }
+}
+
+@keyframes auroraFloat2 {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-40px, -45px) scale(1.06); }
+    100% { transform: translate(35px, -25px) scale(0.96); }
 }
 
 a {
@@ -169,21 +210,35 @@ nav {
     -webkit-text-fill-color: transparent;
 }
 
+/* Authentic Organic Paint Brush Stroke Effect for "perfect" */
 .highlight-handwritten {
     font-family: var(--font-accent);
-    font-size: 1.15em;
+    font-size: 1.22em;
     font-weight: 700;
     font-style: italic;
-    background: linear-gradient(135deg, #FBCFE8 0%, #F472B6 100%);
+    position: relative;
+    display: inline-block;
     color: #0F172A;
     -webkit-text-fill-color: initial;
-    padding: 2px 18px;
-    border-radius: 14px;
-    display: inline-block;
-    transform: rotate(-2.5deg);
-    margin-left: 6px;
+    padding: 2px 14px 4px 12px;
+    margin-left: 4px;
+    transform: rotate(-2deg);
     line-height: 1.05;
-    box-shadow: 0 4px 14px rgba(244, 114, 182, 0.28);
+    background: transparent;
+    box-shadow: none;
+    z-index: 1;
+}
+
+.highlight-handwritten::before {
+    content: "";
+    position: absolute;
+    inset: 4px -4px 0 -4px;
+    background: linear-gradient(105deg, rgba(253, 230, 138, 0.75) 0%, rgba(251, 207, 232, 0.8) 50%, rgba(244, 114, 182, 0.65) 100%);
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px; /* Organic paint brush stroke curve */
+    transform: rotate(-1.2deg) scaleY(0.85);
+    z-index: -1;
+    opacity: 0.85;
+    filter: drop-shadow(0 2px 5px rgba(244, 114, 182, 0.2));
 }
 
 .hero-text p {
