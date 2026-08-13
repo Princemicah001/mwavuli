@@ -195,7 +195,7 @@ nav {
 }
 
 .hero {
-    padding: 150px 5% 60px;
+    padding: 185px 5% 60px;
     max-width: 1600px;
     width: 100%;
     margin: 0 auto;
@@ -226,35 +226,38 @@ nav {
     -webkit-text-fill-color: transparent;
 }
 
-/* Authentic Organic Paint Brush Stroke Effect for "perfect" */
-.highlight-handwritten {
+/* Authentic Organic SVG Paint Brush Stroke Effect for "emotion" (Black background with white font) */
+.highlight-handwritten,
+.brush-wrap {
     font-family: var(--font-accent);
-    font-size: 1.22em;
+    font-size: 1.25em;
     font-weight: 700;
     font-style: italic;
     position: relative;
     display: inline-block;
-    color: #0F172A;
-    -webkit-text-fill-color: initial;
-    padding: 2px 14px 4px 12px;
-    margin-left: 4px;
-    transform: rotate(-2deg);
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    padding: 6px 22px 8px 20px;
+    margin-left: 6px;
+    margin-right: 4px;
+    transform: rotate(-1.5deg);
     line-height: 1.05;
     background: transparent;
-    box-shadow: none;
     z-index: 1;
+    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.4));
 }
 
-.highlight-handwritten::before {
+.highlight-handwritten::before,
+.brush-wrap::before {
     content: "";
     position: absolute;
-    inset: 4px -4px 0 -4px;
-    background: linear-gradient(105deg, rgba(253, 230, 138, 0.75) 0%, rgba(251, 207, 232, 0.8) 50%, rgba(244, 114, 182, 0.65) 100%);
-    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px; /* Organic paint brush stroke curve */
-    transform: rotate(-1.2deg) scaleY(0.85);
+    inset: -6px -14px -6px -14px;
+    background: #0F172A; /* Deep obsidian black paint stroke */
     z-index: -1;
-    opacity: 0.85;
-    filter: drop-shadow(0 2px 5px rgba(244, 114, 182, 0.2));
+    clip-path: url(#clip-brush-bg);
+    filter: drop-shadow(0px 4px 10px rgba(15, 23, 42, 0.35));
+    border-radius: 4px;
+    transform: rotate(-0.5deg);
 }
 
 .hero-text p {
@@ -1309,7 +1312,7 @@ footer {
 }
 
 @media (max-width: 400px) {
-    .logo img { height: 66px; max-width: 260px; }
+    .logo img { height: 66px; max-width: 200px; }
     .hero-text h1 { font-size: 28px; }
     .hero-text p { font-size: 15px; }
     .carousel-3d-track { height: 180px; }
