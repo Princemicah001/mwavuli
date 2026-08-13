@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Syne:wght@600;700;800&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=21">
+    <link rel="stylesheet" href="style.css?v=101">
 </head>
 
 <body>
@@ -221,13 +221,15 @@
         <p>&copy; 2026 MWAVULI PHOTOGRAPHY. All rights reserved.</p>
     </footer>
 
-    <script src="cache-sync.js?v=1"></script>
-    <script src="script.js?v=25"></script>
-    <script src="gallery.js?v=25"></script>
+    <script src="cache-sync.js?v=101"></script>
+    <script src="script.js?v=101"></script>
+    <script src="gallery.js?v=101"></script>
     <script>
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
-                navigator.serviceWorker.register("/sw.js").catch(() => { });
+                navigator.serviceWorker.register("/sw.js?v=101").then((reg) => {
+                    reg.update();
+                }).catch(() => { });
             });
         }
     </script>

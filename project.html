@@ -98,12 +98,17 @@
         </div>
     </footer>
 
-    <script src="script.js?v=3" defer></script>
-    <script src="lightbox.js" defer></script>
-    <script src="project.js?v=3" defer></script>
+    <script src="cache-sync.js?v=101"></script>
+    <script src="script.js?v=101" defer></script>
+    <script src="lightbox.js?v=101" defer></script>
+    <script src="project.js?v=101" defer></script>
     <script>
         if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js").catch(() => { });
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("/sw.js?v=101").then((reg) => {
+                    reg.update();
+                }).catch(() => { });
+            });
         }
     </script>
 </body>

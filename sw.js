@@ -1,4 +1,5 @@
-const CACHE_NAME = 'mwavuli-media-cache-v4';
+const CACHE_NAME = 'mwavuli-v101-live';
+
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -8,32 +9,31 @@ const STATIC_ASSETS = [
     '/style.css',
     '/script.js',
     '/gallery.js',
-    '/project.js',
-    '/projects.js',
-    '/lightbox.js',
+    '/cache-sync.js',
     '/icon.svg',
-    '/manifest.json',
-    '/assets/audio/popup.mp3'
+    '/manifest.json'
 ];
 
-// Install event - precache essential static shell
+// Install event - activate immediately and pre-cache shell
 self.addEventListener('install', (event) => {
+    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(STATIC_ASSETS).catch((err) => {
                 console.warn('[SW] Pre-cache partial fail:', err);
             });
-        }).then(() => self.skipWaiting())
+        })
     );
 });
 
-// Activate event - clean up old caches
+// Activate event - purge all outdated caches across mobile devices immediately
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((keys) => {
             return Promise.all(
                 keys.map((key) => {
                     if (key !== CACHE_NAME) {
+                        console.log('[SW] Purging outdated cache:', key);
                         return caches.delete(key);
                     }
                 })
@@ -42,7 +42,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Fetch event - Cache-First for static assets, Network-First for HTML navigation, bypass for API
+// Fetch event - Network-First for Code/Style/Scripts, Cache-First for Heavy Media
 self.addEventListener('fetch', (event) => {
     const { request } = event;
     if (!request || request.method !== 'GET') return;
@@ -54,51 +54,15 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Bypass Service Worker for all API endpoints so backend handles status & headers directly
-    if (url.pathname.startsWith('/api/')) {
-        return;
-    }
+    // Bypass Service Worker for all API requests
+    if (url.pathname.startsWith('/api/')) return;
 
-    // Media & Static Assets -> Cache-First + Stale-While-Revalidate
-    const isMediaOrAsset =
-        url.hostname.includes('cloudinary.com') ||
-        url.hostname.includes('unsplash.com') ||
-        url.hostname.includes('fontawesome') ||
-        url.hostname.includes('googleapis.com') ||
-        url.hostname.includes('gstatic.com') ||
-        url.pathname.includes('/uploads/') ||
-        url.pathname.includes('/assets/') ||
-        /\.(jpg|jpeg|png|gif|webp|avif|svg|mp4|webm|mov|m4v|mp3|wav|ogg|woff2?|ttf|css|js)$/i.test(url.pathname);
+    // Code assets (.css, .js, HTML) -> Network-First (always serve fresh updates on refresh)
+    const isCodeAsset = request.mode === 'navigate' ||
+        (request.headers.get('accept') && request.headers.get('accept').includes('text/html')) ||
+        /\.(css|js)$/i.test(url.pathname);
 
-    if (isMediaOrAsset) {
-        event.respondWith(
-            caches.open(CACHE_NAME).then(async (cache) => {
-                const cachedResponse = await cache.match(request);
-                if (cachedResponse) {
-                    fetch(request).then((networkResponse) => {
-                        if (networkResponse && (networkResponse.ok || networkResponse.type === 'opaque')) {
-                            cache.put(request, networkResponse.clone());
-                        }
-                    }).catch(() => {});
-                    return cachedResponse;
-                }
-
-                try {
-                    const networkResponse = await fetch(request);
-                    if (networkResponse && (networkResponse.ok || networkResponse.type === 'opaque')) {
-                        cache.put(request, networkResponse.clone());
-                    }
-                    return networkResponse;
-                } catch (err) {
-                    return fetch(request);
-                }
-            })
-        );
-        return;
-    }
-
-    // HTML Navigation pages -> Network-First with Cache fallback
-    if (request.mode === 'navigate' || (request.headers.get('accept') && request.headers.get('accept').includes('text/html'))) {
+    if (isCodeAsset) {
         event.respondWith(
             fetch(request).then((networkResponse) => {
                 if (networkResponse && networkResponse.ok) {
@@ -108,10 +72,34 @@ self.addEventListener('fetch', (event) => {
                 return networkResponse;
             }).catch(async () => {
                 const cached = await caches.match(request);
-                if (cached) return cached;
-                const shell = await caches.match('/index.html');
-                return shell || fetch(request);
+                return cached || fetch(request);
             })
         );
+        return;
     }
+
+    // Heavy Media & Fonts -> Cache-First with Stale-While-Revalidate
+    event.respondWith(
+        caches.open(CACHE_NAME).then(async (cache) => {
+            const cachedResponse = await cache.match(request);
+            if (cachedResponse) {
+                fetch(request).then((networkResponse) => {
+                    if (networkResponse && (networkResponse.ok || networkResponse.type === 'opaque')) {
+                        cache.put(request, networkResponse.clone());
+                    }
+                }).catch(() => {});
+                return cachedResponse;
+            }
+
+            try {
+                const networkResponse = await fetch(request);
+                if (networkResponse && (networkResponse.ok || networkResponse.type === 'opaque')) {
+                    cache.put(request, networkResponse.clone());
+                }
+                return networkResponse;
+            } catch (err) {
+                return fetch(request);
+            }
+        })
+    );
 });
