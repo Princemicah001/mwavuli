@@ -1208,7 +1208,7 @@ footer {
 /* Responsive Breakpoints & Mobile Touch Scaling */
 @media (max-width: 900px) {
     header { padding: 20px 4%; }
-    .logo img { height: 68px; max-width: 320px; }
+    .logo img { height: 76px; max-width: 340px; }
     .nav-links { display: none; }
     .nav-toggle { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.04); }
     
@@ -1224,7 +1224,7 @@ footer {
     .carousel-3d-item.prev-2, .carousel-3d-item.next-2 { opacity: 0; pointer-events: none; }
 
     .photos-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
-    .albums-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .albums-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
     
     .lightbox-nav { width: 46px; height: 46px; font-size: 16px; }
     .lightbox-prev { left: 14px; }
@@ -1235,7 +1235,7 @@ footer {
 
 @media (max-width: 600px) {
     header { padding: 16px 4%; }
-    .logo img { height: 62px; max-width: 280px; }
+    .logo img { height: 72px; max-width: 300px; }
     
     .hero { padding: 98px 4% 32px; gap: 28px; }
     .hero-text h1 { font-size: clamp(30px, 8.5vw, 42px); letter-spacing: -0.03em; margin-bottom: 16px; line-height: 1.15; }
@@ -1254,10 +1254,11 @@ footer {
 
     .gallery-container { padding: 10px 4% 60px; }
     .view-controls { margin-bottom: 32px; }
-    .albums-grid { grid-template-columns: 1fr; gap: 20px; }
-    .album-info { padding: 20px 22px; }
-    .album-title { font-size: 18px; font-weight: 800; }
-    .album-count { font-size: 13px; font-weight: 600; }
+    .albums-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .album-card { border-radius: 16px; }
+    .album-info { padding: 12px 14px; flex-direction: column; align-items: flex-start; gap: 4px; }
+    .album-title { font-size: 15px; font-weight: 700; line-height: 1.25; }
+    .album-count { font-size: 11px; font-weight: 600; padding: 3px 8px; }
     
     .photos-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .photo-item { border-radius: 16px; }
@@ -1308,11 +1309,14 @@ footer {
 }
 
 @media (max-width: 400px) {
-    .logo img { height: 56px; max-width: 240px; }
+    .logo img { height: 66px; max-width: 260px; }
     .hero-text h1 { font-size: 28px; }
     .hero-text p { font-size: 15px; }
     .carousel-3d-track { height: 180px; }
     .carousel-3d-item { width: 74vw; max-width: 270px; aspect-ratio: 16/10; border-radius: 12px; }
+    .albums-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .album-info { padding: 10px 10px; }
+    .album-title { font-size: 13px; }
     .photos-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .about-content h2 { font-size: 24px; }
     .about-stats { grid-template-columns: repeat(3, 1fr); gap: 6px; }
