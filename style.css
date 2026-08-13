@@ -226,20 +226,20 @@ nav {
     -webkit-text-fill-color: transparent;
 }
 
-/* Authentic Organic SVG Paint Brush Stroke Effect for "emotion" (Black background with white font) */
+/* Authentic Thin Organic SVG Paint Brush Stroke for "emotion" (Black background with white font) */
 .highlight-handwritten,
 .brush-wrap {
     font-family: var(--font-accent);
-    font-size: 1.25em;
+    font-size: 1.20em;
     font-weight: 700;
     font-style: italic;
     position: relative;
     display: inline-block;
     color: #FFFFFF !important;
     -webkit-text-fill-color: #FFFFFF !important;
-    padding: 6px 22px 8px 20px;
-    margin-left: 6px;
-    margin-right: 4px;
+    padding: 3px 18px 5px 16px;
+    margin-left: 4px;
+    margin-right: 2px;
     transform: rotate(-1.5deg);
     line-height: 1.05;
     background: transparent;
@@ -251,12 +251,11 @@ nav {
 .brush-wrap::before {
     content: "";
     position: absolute;
-    inset: -6px -14px -6px -14px;
+    inset: 1px -10px 0px -10px;
     background: #0F172A; /* Deep obsidian black paint stroke */
     z-index: -1;
     clip-path: url(#clip-brush-bg);
-    filter: drop-shadow(0px 4px 10px rgba(15, 23, 42, 0.35));
-    border-radius: 4px;
+    filter: drop-shadow(0px 3px 8px rgba(15, 23, 42, 0.3));
     transform: rotate(-0.5deg);
 }
 
