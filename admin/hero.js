@@ -38,8 +38,13 @@ function renderSlides(slides) {
     slides.forEach((slide, i) => {
         const item = document.createElement("div");
         item.className = "hero-slide-item";
+        const isVideo = slide.mediaType === "video" || /\.(mp4|mov|webm|ogv|m4v)(\?.*)?$/i.test(slide.image);
+        const media = isVideo
+            ? `<video controls playsinline preload="metadata"${slide.thumbnail ? ` poster="${mediaUrl(slide.thumbnail)}"` : ""} src="${mediaUrl(slide.image)}"></video>`
+            : `<img src="${mediaUrl(slide.thumbnail || slide.image)}" alt="Hero slide" loading="lazy">`;
+
         item.innerHTML = `
-            <img src="${mediaUrl(slide.thumbnail || slide.image)}" alt="Hero slide" loading="lazy">
+            ${media}
             <div class="hero-slide-actions">
                 <button type="button" class="up-btn" data-id="${slide._id}" ${i === 0 ? "disabled" : ""}>↑</button>
                 <button type="button" class="down-btn" data-id="${slide._id}" ${i === slides.length - 1 ? "disabled" : ""}>↓</button>

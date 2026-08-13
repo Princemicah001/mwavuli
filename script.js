@@ -661,6 +661,21 @@
         });
 
         async function fetchPortfolioData() {
+            const cachedData = localStorage.getItem("MWAVULI_PORTFOLIO_CACHE");
+            let hasCachedRender = false;
+
+            if (cachedData) {
+                try {
+                    const parsed = JSON.parse(cachedData);
+                    if (parsed.projects && parsed.allPhotos) {
+                        projects = parsed.projects;
+                        allPhotos = parsed.allPhotos;
+                        renderAlbums();
+                        hasCachedRender = true;
+                    }
+                } catch (_) {}
+            }
+
             try {
                 const [projectsRes, photosRes] = await Promise.all([
                     fetch(`${API}/api/projects`),
@@ -672,10 +687,19 @@
                 projects = projectsData.projects || [];
                 allPhotos = photosData.photos || [];
 
-                renderAlbums();
+                localStorage.setItem("MWAVULI_PORTFOLIO_CACHE", JSON.stringify({ projects, allPhotos }));
+
+                const activeTarget = document.querySelector(".segment-btn.active")?.getAttribute("data-target");
+                if (activeTarget === "all") {
+                    renderAllPhotos();
+                } else {
+                    renderAlbums();
+                }
             } catch (err) {
                 console.error("Failed to load portfolio data", err);
-                container.innerHTML = "<p class='gallery-empty' style='text-align:center;'>Could not load portfolio photos.</p>";
+                if (!hasCachedRender) {
+                    container.innerHTML = "<p class='gallery-empty' style='text-align:center;'>Could not load portfolio photos.</p>";
+                }
             }
         }
 
@@ -789,10 +813,11 @@
     }
 
     // Lightbox integration
-    // Lightbox integration - Zero latency preloading & aspect ratio preservation
+    // Lightbox integration - Zero latency preloading, image & video aspect ratio preservation
     (function initLightbox() {
         const lightbox = document.getElementById("lightbox");
         const lightboxImg = document.getElementById("lightbox-img");
+        const lightboxVideo = document.getElementById("lightbox-video");
         const closeBtn = document.getElementById("lightboxClose");
         const prevBtn = document.getElementById("lightboxPrev");
         const nextBtn = document.getElementById("lightboxNext");
@@ -802,8 +827,21 @@
         let currentIndex = 0;
         const memoryCache = new Map();
 
-        function preload(url) {
-            if (!url || memoryCache.has(url) || /\.(mp4|mov|webm|ogv|m4v)(\?.*)?$/i.test(url)) return;
+        function isVideoUrl(item) {
+            if (!item) return false;
+            if (typeof item === "object" && item.type === "video") return true;
+            const str = typeof item === "object" ? item.url : item;
+            return /\.(mp4|mov|webm|ogv|m4v)(\?.*)?$/i.test(str);
+        }
+
+        function getUrl(item) {
+            if (!item) return "";
+            return typeof item === "object" ? item.url : item;
+        }
+
+        function preload(item) {
+            const url = getUrl(item);
+            if (!url || memoryCache.has(url) || isVideoUrl(item)) return;
             const img = new Image();
             img.decoding = "async";
             img.src = url;
@@ -818,18 +856,37 @@
             if (!imgs || !imgs.length) return;
             sources = imgs;
             currentIndex = idx;
-            sources.forEach(preload); // Warm memory cache for all preview items immediately
+            sources.forEach(preload);
 
-            if (lightboxImg) {
-                lightboxImg.src = sources[currentIndex];
-            }
+            showCurrent();
             lightbox.classList.add("active");
             document.body.style.overflow = "hidden";
         };
 
         function showCurrent() {
-            if (!lightboxImg || !sources.length) return;
-            lightboxImg.src = sources[currentIndex];
+            if (!sources.length) return;
+            const currentItem = sources[currentIndex];
+            const url = getUrl(currentItem);
+
+            if (isVideoUrl(currentItem)) {
+                if (lightboxImg) lightboxImg.style.display = "none";
+                if (lightboxVideo) {
+                    lightboxVideo.style.display = "block";
+                    lightboxVideo.src = url;
+                    lightboxVideo.play().catch(() => {});
+                }
+            } else {
+                if (lightboxVideo) {
+                    lightboxVideo.pause();
+                    lightboxVideo.src = "";
+                    lightboxVideo.style.display = "none";
+                }
+                if (lightboxImg) {
+                    lightboxImg.style.display = "block";
+                    lightboxImg.src = url;
+                }
+            }
+
             const nextIdx = (currentIndex + 1) % sources.length;
             const prevIdx = (currentIndex - 1 + sources.length) % sources.length;
             preload(sources[nextIdx]);
@@ -837,6 +894,10 @@
         }
 
         function close() {
+            if (lightboxVideo) {
+                lightboxVideo.pause();
+                lightboxVideo.src = "";
+            }
             lightbox.classList.remove("active");
             document.body.style.overflow = "";
         }

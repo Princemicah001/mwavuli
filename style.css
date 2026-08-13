@@ -126,9 +126,9 @@ nav {
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     font-weight: 700;
-    font-size: 22px;
+    font-size: 26px;
     letter-spacing: -0.5px;
     color: var(--text-main);
     cursor: pointer;
@@ -140,9 +140,9 @@ nav {
 }
 
 .logo img {
-    height: 60px;
+    height: 76px;
     width: auto;
-    max-width: 280px;
+    max-width: 360px;
     border-radius: 0;
     object-fit: contain;
 }

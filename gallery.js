@@ -47,7 +47,27 @@ function shuffle(arr) {
 
 if (projectCollectionsEl || generalGallery) {
     async function loadGallery() {
-        showSkeleton();
+        const cachedData = localStorage.getItem("MWAVULI_GALLERY_CACHE");
+        let hasCachedRender = false;
+
+        if (cachedData) {
+            try {
+                const { projects, allPhotos } = JSON.parse(cachedData);
+                if (projects && allPhotos) {
+                    const generalPhotos = allPhotos.filter(p => !p.project);
+                    const projectPhotos = allPhotos.filter(p => p.project);
+                    const combined = shuffle([...generalPhotos, ...projectPhotos]);
+                    if (projectCollectionsEl) renderProjectCollections(projects);
+                    if (generalGallery) renderGeneralGallery(combined);
+                    hasCachedRender = true;
+                }
+            } catch (_) {}
+        }
+
+        if (!hasCachedRender) {
+            showSkeleton();
+        }
+
         try {
             const [projectsRes, photosRes] = await Promise.all([
                 fetch(`${API}/api/projects`),
@@ -60,24 +80,23 @@ if (projectCollectionsEl || generalGallery) {
             const projects = projectsData.projects || [];
             const allPhotos = photosData.photos || [];
 
+            localStorage.setItem("MWAVULI_GALLERY_CACHE", JSON.stringify({ projects, allPhotos }));
+
             const generalPhotos = allPhotos.filter(p => !p.project);
-
-            // Every photo that belongs to a project, merged into the general
-            // gallery so the wall shows the full body of work...
             const projectPhotos = allPhotos.filter(p => p.project);
-
-            // ...then shuffled so the layout feels fresh on each visit.
             const combined = shuffle([...generalPhotos, ...projectPhotos]);
 
             if (projectCollectionsEl) renderProjectCollections(projects);
             if (generalGallery) renderGeneralGallery(combined);
         } catch (err) {
             console.error("Failed to load gallery", err);
-            if (projectCollectionsEl) {
-                projectCollectionsEl.innerHTML = "<p class='gallery-empty'>Could not load collections.</p>";
-            }
-            if (generalGallery) {
-                generalGallery.innerHTML = "<p class='gallery-empty'>Could not load gallery.</p>";
+            if (!hasCachedRender) {
+                if (projectCollectionsEl) {
+                    projectCollectionsEl.innerHTML = "<p class='gallery-empty'>Could not load collections.</p>";
+                }
+                if (generalGallery) {
+                    generalGallery.innerHTML = "<p class='gallery-empty'>Could not load gallery.</p>";
+                }
             }
         }
     }
@@ -190,13 +209,19 @@ if (projectCollectionsEl || generalGallery) {
             videos.forEach(playVideo);
         }
 
-        const images = generalGallery.querySelectorAll(".gallery-item img");
-        const fullUrls = Array.from(images).map(i => i.dataset.full || i.src);
-        if (window.preloadLightboxSources) window.preloadLightboxSources(fullUrls);
+        const mediaElements = generalGallery.querySelectorAll(".gallery-item img, .gallery-item video");
+        const allItems = Array.from(mediaElements).map(el => {
+            const isVideo = el.tagName.toLowerCase() === 'video';
+            const url = isVideo ? (el.src || el.querySelector('source')?.src) : (el.dataset.full || el.src);
+            return { type: isVideo ? 'video' : 'image', url };
+        });
 
-        images.forEach((img, idx) => {
-            img.addEventListener("click", () => {
-                window.openLightbox(fullUrls, idx);
+        const imageOnlyUrls = allItems.filter(item => item.type === 'image').map(item => item.url);
+        if (window.preloadLightboxSources) window.preloadLightboxSources(imageOnlyUrls);
+
+        mediaElements.forEach((el, idx) => {
+            el.addEventListener("click", () => {
+                window.openLightbox(allItems, idx);
             });
         });
 

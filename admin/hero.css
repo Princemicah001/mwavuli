@@ -133,7 +133,8 @@
     box-shadow: 0 12px 28px rgba(0,0,0,0.08);
 }
 
-.hero-slide-item img {
+.hero-slide-item img,
+.hero-slide-item video {
     width: 100%;
     height: 150px;
     object-fit: cover;
