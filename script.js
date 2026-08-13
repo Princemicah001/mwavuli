@@ -876,82 +876,81 @@
         if (!fab || !hero) return;
 
         let soundPlayed = false;
-        let audioUnlocked = false;
         const popupAudio = new Audio("assets/audio/popup.mp3");
         popupAudio.preload = "auto";
 
-        // Global user interaction audio unlocker to bypass strict browser autoplay blocks
-        function unlockAudio() {
-            if (audioUnlocked) return;
-            popupAudio.play().then(() => {
-                popupAudio.pause();
-                popupAudio.currentTime = 0;
-                audioUnlocked = true;
-            }).catch(() => {});
-        }
-
-        window.addEventListener("pointerdown", unlockAudio, { passive: true });
-        window.addEventListener("touchstart", unlockAudio, { passive: true });
-        window.addEventListener("scroll", unlockAudio, { passive: true });
-
-        function triggerPopSound() {
-            // First attempt MP3 playback
-            let mp3Success = false;
-            try {
-                popupAudio.currentTime = 0;
-                const promise = popupAudio.play();
-                if (promise !== undefined) {
-                    promise.then(() => {
-                        mp3Success = true;
-                    }).catch(() => {
-                        playSynthPop();
-                    });
-                }
-            } catch (e) {
-                playSynthPop();
-            }
-
-            // Always trigger synth bubble pop as immediate audio guarantee
-            playSynthPop();
-        }
-
-        function playSynthPop() {
-            try {
+        // Global Web Audio Context for zero-latency pop sound
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (!AudioCtx) return;
-                const ctx = new AudioCtx();
-                if (ctx.state === 'suspended') {
-                    ctx.resume();
+                if (AudioCtx) audioCtx = new AudioCtx();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => {});
+            }
+            return audioCtx;
+        }
+
+        // Silent unlock listener on first user interaction
+        function unlockAudioEngine() {
+            const ctx = getAudioContext();
+            if (ctx && ctx.state === 'suspended') {
+                ctx.resume().catch(() => {});
+            }
+            popupAudio.load();
+        }
+
+        window.addEventListener("pointerdown", unlockAudioEngine, { once: true, passive: true });
+        window.addEventListener("touchstart", unlockAudioEngine, { once: true, passive: true });
+        window.addEventListener("scroll", unlockAudioEngine, { once: true, passive: true });
+
+        function playPop() {
+            // 1. Play Web Audio API pop sound (instant, 100% reliable)
+            try {
+                const ctx = getAudioContext();
+                if (ctx) {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(320, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12);
+
+                    gain.gain.setValueAtTime(0.5, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.12);
                 }
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
+            } catch (e) {}
 
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(340, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(820, ctx.currentTime + 0.1);
-
-                gain.gain.setValueAtTime(0.4, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.1);
+            // 2. Play MP3 file
+            try {
+                popupAudio.currentTime = 0;
+                popupAudio.play().catch(() => {});
             } catch (e) {}
         }
 
         window.addEventListener("scroll", () => {
-            const threshold = hero.offsetHeight * 0.3;
+            const threshold = hero.offsetHeight * 0.25;
             if (window.scrollY > threshold) {
                 if (!fab.classList.contains("visible")) {
                     fab.classList.add("visible");
                     if (!soundPlayed) {
-                        triggerPopSound();
+                        playPop();
                         soundPlayed = true;
                     }
                 }
             }
+        });
+
+        // Also play sound when user clicks the FAB
+        fab.addEventListener("click", () => {
+            playPop();
         });
     }
 
