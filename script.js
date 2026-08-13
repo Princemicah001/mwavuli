@@ -1021,11 +1021,6 @@
                 }
             }
         });
-
-        // Also play sound when user clicks the FAB
-        fab.addEventListener("click", () => {
-            playPop();
-        });
     }
 
     // Global scroll reveal
