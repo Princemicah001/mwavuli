@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -11,10 +12,13 @@
     <!-- Typography: Cormorant Garamond, Playfair Display, Syne, Plus Jakarta Sans & Caveat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Syne:wght@600;700;800&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Syne:wght@600;700;800&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="style.css?v=21">
 </head>
+
 <body>
 
     <header>
@@ -53,25 +57,28 @@
 
     <!-- SVG Clip Path Definition for Thin Loose-Bristle Paint Brush Stroke -->
     <svg width="0" height="0" style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
-      <defs>
-        <clipPath id="clip-brush-bg" clipPathUnits="objectBoundingBox">
-          <path d="M 0.05,0.22 C 0.20,0.12 0.45,0.16 0.70,0.14 C 0.84,0.13 0.92,0.18 0.96,0.22 L 0.99,0.28 L 0.94,0.36 L 1.00,0.46 L 0.95,0.58 L 0.98,0.70 L 0.92,0.80 C 0.75,0.86 0.50,0.82 0.25,0.85 C 0.12,0.86 0.05,0.80 0.02,0.74 L 0.00,0.64 L 0.04,0.52 L 0.00,0.40 L 0.05,0.30 Z"></path>
-        </clipPath>
-      </defs>
+        <defs>
+            <clipPath id="clip-brush-bg" clipPathUnits="objectBoundingBox">
+                <path
+                    d="M 0.05,0.22 C 0.20,0.12 0.45,0.16 0.70,0.14 C 0.84,0.13 0.92,0.18 0.96,0.22 L 0.99,0.28 L 0.94,0.36 L 1.00,0.46 L 0.95,0.58 L 0.98,0.70 L 0.92,0.80 C 0.75,0.86 0.50,0.82 0.25,0.85 C 0.12,0.86 0.05,0.80 0.02,0.74 L 0.00,0.64 L 0.04,0.52 L 0.00,0.40 L 0.05,0.30 Z">
+                </path>
+            </clipPath>
+        </defs>
     </svg>
 
     <!-- 3D CAROUSEL HERO SECTION -->
     <section id="home" class="hero reveal">
         <div class="hero-text">
             <h1>Capturing pure <span class="highlight-handwritten brush-wrap">emotion</span><br>behind every moment</h1>
-            <p>We weave authentic connection, natural light, and subtle elegance into timeless visual stories. Every frame is crafted to celebrate who you truly are—effortless, unscripted, and breathtakingly real.</p>
+            <p>We weave authentic connection, natural light, and subtle elegance into timeless visual stories. Every
+                frame is crafted to celebrate who you truly are effortless, unscripted, and breathtakingly real.</p>
         </div>
-        
+
         <div class="carousel-3d-container">
             <div class="carousel-3d-track" id="c3d-track">
                 <!-- Dynamically populated from Cloudinary via API -->
             </div>
-            
+
             <div class="carousel-3d-controls">
                 <div class="carousel-3d-dots" id="c3d-dots">
                     <!-- Dots injected via JS -->
@@ -99,7 +106,8 @@
     <section id="about" class="about-section reveal">
         <div class="about-container">
             <div class="about-image-wrap" id="aboutImageContainer">
-                <img id="aboutImage" src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=800&q=80" alt="Mwavuli Photographer" loading="eager" decoding="async" fetchpriority="high">
+                <img id="aboutImage" src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=800&q=80"
+                    alt="Mwavuli Photographer" loading="eager" decoding="async" fetchpriority="high">
                 <div class="about-badge">
                     <span class="badge-number">7+</span>
                     <span class="badge-text">Years of Excellence</span>
@@ -108,8 +116,11 @@
             <div class="about-content">
                 <span class="about-tag">THE ARTIST BEHIND THE LENS</span>
                 <h2>Capturing Timeless Moments & Authentic Expressions</h2>
-                <p id="aboutBioText">At Mwavuli Photography, we believe every frame tells an unscripted story. Founded on a passion for natural light and candid visual storytelling, our approach turns fleeting emotions into enduring works of art. Whether it's the quiet romance of an elopement or the vibrant energy of a celebration, we match your unique personality with artistic precision.</p>
-                
+                <p id="aboutBioText">At Mwavuli Photography, we believe every frame tells an unscripted story. Founded
+                    on a passion for natural light and candid visual storytelling, our approach turns fleeting emotions
+                    into enduring works of art. Whether it's the quiet romance of an elopement or the vibrant energy of
+                    a celebration, we match your unique personality with artistic precision.</p>
+
                 <div class="about-stats">
                     <div class="stat-card">
                         <h3>350+</h3>
@@ -187,7 +198,9 @@
     </section>
 
     <!-- FLOATING WHATSAPP FAB -->
-    <a href="https://wa.me/254769578232?text=Hello%20Mwavuli%20Photography%2C%20I%20would%20like%20to%20book%20a%20photography%20session!" target="_blank" rel="noopener noreferrer" class="book-now-fab whatsapp-fab" id="bookNowFab" aria-label="Book on WhatsApp">
+    <a href="https://wa.me/254769578232?text=Hello%20Mwavuli%20Photography%2C%20I%20would%20like%20to%20book%20a%20photography%20session!"
+        target="_blank" rel="noopener noreferrer" class="book-now-fab whatsapp-fab" id="bookNowFab"
+        aria-label="Book on WhatsApp">
         <i class="fa-brands fa-whatsapp"></i>
         <span>Book</span>
     </a>
@@ -210,9 +223,10 @@
     <script>
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
-                navigator.serviceWorker.register("/sw.js").catch(() => {});
+                navigator.serviceWorker.register("/sw.js").catch(() => { });
             });
         }
     </script>
 </body>
+
 </html>
