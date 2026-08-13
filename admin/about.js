@@ -72,9 +72,7 @@ form.addEventListener("submit", async (e) => {
         if (xhr.status >= 200 && xhr.status < 300 && data.success) {
             window.showToast("About image updated", "success");
             form.reset();
-loadAbout();
-
-})();
+            loadAbout();
         } else {
             setMsg(aboutMsg, data.message || "Update failed.", "error");
         }
@@ -92,3 +90,4 @@ loadAbout();
 });
 
 loadAbout();
+})();

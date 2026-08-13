@@ -9,6 +9,9 @@ const sharp = require("sharp");
 const execFileP = util.promisify(execFile);
 
 const UPLOAD_DIR = path.join(__dirname, "..", "uploads");
+if (!fs.existsSync(UPLOAD_DIR)) {
+    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
 
 // Long-edge dimensions (px). Full-size stays crisp on screen; thumbnail keeps
 // the gallery fast. Values mirror the static-site optimisation already done.

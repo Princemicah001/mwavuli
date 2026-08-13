@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mwavuli-media-cache-v3';
+const CACHE_NAME = 'mwavuli-media-cache-v4';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -42,7 +42,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Fetch event - Cache-First for images, media, assets; Network-First with Cache fallback for API
+// Fetch event - Cache-First for static assets, Network-First for HTML navigation, bypass for API
 self.addEventListener('fetch', (event) => {
     const { request } = event;
     if (!request || request.method !== 'GET') return;
@@ -51,6 +51,11 @@ self.addEventListener('fetch', (event) => {
     try {
         url = new URL(request.url);
     } catch (e) {
+        return;
+    }
+
+    // Bypass Service Worker for all API endpoints so backend handles status & headers directly
+    if (url.pathname.startsWith('/api/')) {
         return;
     }
 
@@ -70,7 +75,6 @@ self.addEventListener('fetch', (event) => {
             caches.open(CACHE_NAME).then(async (cache) => {
                 const cachedResponse = await cache.match(request);
                 if (cachedResponse) {
-                    // Trigger background fetch to keep cache fresh
                     fetch(request).then((networkResponse) => {
                         if (networkResponse && (networkResponse.ok || networkResponse.type === 'opaque')) {
                             cache.put(request, networkResponse.clone());
@@ -79,7 +83,6 @@ self.addEventListener('fetch', (event) => {
                     return cachedResponse;
                 }
 
-                // If not cached, fetch from network and cache
                 try {
                     const networkResponse = await fetch(request);
                     if (networkResponse && (networkResponse.ok || networkResponse.type === 'opaque')) {
@@ -87,15 +90,15 @@ self.addEventListener('fetch', (event) => {
                     }
                     return networkResponse;
                 } catch (err) {
-                    return cachedResponse || Response.error();
+                    return fetch(request);
                 }
             })
         );
         return;
     }
 
-    // API requests -> Network-First with Cache Fallback
-    if (url.pathname.startsWith('/api/')) {
+    // HTML Navigation pages -> Network-First with Cache fallback
+    if (request.mode === 'navigate' || (request.headers.get('accept') && request.headers.get('accept').includes('text/html'))) {
         event.respondWith(
             fetch(request).then((networkResponse) => {
                 if (networkResponse && networkResponse.ok) {
@@ -103,23 +106,12 @@ self.addEventListener('fetch', (event) => {
                     caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
                 }
                 return networkResponse;
-            }).catch(() => {
-                return caches.match(request);
+            }).catch(async () => {
+                const cached = await caches.match(request);
+                if (cached) return cached;
+                const shell = await caches.match('/index.html');
+                return shell || fetch(request);
             })
         );
-        return;
     }
-
-    // Default HTML pages -> Stale-While-Revalidate
-    event.respondWith(
-        caches.match(request).then((cachedResponse) => {
-            const fetchPromise = fetch(request).then((networkResponse) => {
-                if (networkResponse && networkResponse.ok) {
-                    caches.open(CACHE_NAME).then((cache) => cache.put(request, networkResponse.clone()));
-                }
-                return networkResponse;
-            }).catch(() => cachedResponse);
-            return cachedResponse || fetchPromise;
-        })
-    );
 });
