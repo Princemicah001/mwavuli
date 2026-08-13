@@ -872,14 +872,19 @@
                 if (lightboxImg) lightboxImg.style.display = "none";
                 if (lightboxVideo) {
                     lightboxVideo.style.display = "block";
-                    lightboxVideo.src = url;
+                    const fastUrl = cldUrl(url, "q_auto,f_auto,w_1200");
+                    if (lightboxVideo.src !== fastUrl) {
+                        lightboxVideo.src = fastUrl;
+                    }
                     lightboxVideo.muted = false;
                     lightboxVideo.volume = 1.0;
                     const p = lightboxVideo.play();
                     if (p !== undefined) {
                         p.catch(() => {
                             lightboxVideo.muted = true;
-                            lightboxVideo.play().catch(() => {});
+                            lightboxVideo.play().then(() => {
+                                lightboxVideo.muted = false;
+                            }).catch(() => {});
                         });
                     }
                 }
