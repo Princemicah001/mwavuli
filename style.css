@@ -19,7 +19,7 @@
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
     --spring: cubic-bezier(0.25, 1, 0.5, 1);
     --font-main: 'Plus Jakarta Sans', 'Poppins', sans-serif;
-    --font-heading: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+    --font-heading: 'Cormorant Garamond', 'Playfair Display', 'Syne', serif;
     --font-accent: 'Caveat', cursive;
 }
 
@@ -199,10 +199,10 @@ nav {
 
 .hero-text h1 {
     font-family: var(--font-heading);
-    font-size: clamp(38px, 5.5vw, 62px);
-    font-weight: 800;
-    line-height: 1.12;
-    letter-spacing: -0.035em;
+    font-size: clamp(42px, 6.2vw, 72px);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
     margin-bottom: 20px;
     color: var(--text-main);
     background: linear-gradient(135deg, #0F172A 0%, #334155 100%);
