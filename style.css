@@ -667,6 +667,14 @@ nav {
     transform: translateY(-50%) scale(1.08);
 }
 
+.lightbox-prev {
+    left: 24px;
+}
+
+.lightbox-next {
+    right: 24px;
+}
+
 /* ==========================================================================
    SKELETON SHIMMER LOADING STATES (EMPTY CARD LOADERS)
    ========================================================================== */
