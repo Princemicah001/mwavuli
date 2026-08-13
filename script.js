@@ -873,7 +873,15 @@
                 if (lightboxVideo) {
                     lightboxVideo.style.display = "block";
                     lightboxVideo.src = url;
-                    lightboxVideo.play().catch(() => {});
+                    lightboxVideo.muted = false;
+                    lightboxVideo.volume = 1.0;
+                    const p = lightboxVideo.play();
+                    if (p !== undefined) {
+                        p.catch(() => {
+                            lightboxVideo.muted = true;
+                            lightboxVideo.play().catch(() => {});
+                        });
+                    }
                 }
             } else {
                 if (lightboxVideo) {
