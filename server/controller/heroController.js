@@ -83,6 +83,7 @@ exports.addSlide = async (req, res) => {
             ...publicView(hero)
         });
     } catch (error) {
+        console.error("Hero addSlide error details:", error);
         await Promise.all(cloudFiles.map(c => deleteFromCloudinary(c.url, { resourceType: c.type }).catch(() => {})));
         await Promise.all(localFiles.map(p => fs.promises.unlink(p).catch(() => {})));
         const status = error.status || 500;

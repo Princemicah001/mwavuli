@@ -64,6 +64,15 @@ app.get("/api/health", (req, res) => {
     res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
+app.get("/favicon.ico", (req, res) => {
+    const iconPath = path.join(__dirname, "..", "icon.svg");
+    if (require("fs").existsSync(iconPath)) {
+        res.sendFile(iconPath);
+    } else {
+        res.status(204).end();
+    }
+});
+
 app.use(express.static(path.join(__dirname, ".."), {
     maxAge: '1d',
     setHeaders: (res, filePath) => {
