@@ -661,46 +661,90 @@
         });
 
         async function fetchPortfolioData() {
-            const cachedData = localStorage.getItem("MWAVULI_PORTFOLIO_CACHE");
+            const cacheKey = "MWAVULI_PORTFOLIO_CACHE_V2";
+            const cachedEntry = window.SmartCacheManager ? window.SmartCacheManager.getCache(cacheKey) : null;
             let hasCachedRender = false;
 
-            if (cachedData) {
+            if (cachedEntry && cachedEntry.data) {
                 try {
-                    const parsed = JSON.parse(cachedData);
-                    if (parsed.projects && parsed.allPhotos) {
-                        projects = parsed.projects;
-                        allPhotos = parsed.allPhotos;
+                    const data = cachedEntry.data;
+                    if (data.projects && data.allPhotos) {
+                        projects = data.projects;
+                        allPhotos = data.allPhotos;
                         renderAlbums();
                         hasCachedRender = true;
                     }
                 } catch (_) {}
             }
 
-            try {
-                const [projectsRes, photosRes] = await Promise.all([
-                    fetch(`${API}/api/projects`),
-                    fetch(`${API}/api/photos`)
-                ]);
-                const projectsData = await projectsRes.json();
-                const photosData = await photosRes.json();
+            async function syncFromAPI() {
+                try {
+                    const [projectsRes, photosRes] = await Promise.all([
+                        fetch(`${API}/api/projects`),
+                        fetch(`${API}/api/photos`)
+                    ]);
+                    const projectsData = await projectsRes.json();
+                    const photosData = await photosRes.json();
 
-                projects = projectsData.projects || [];
-                allPhotos = photosData.photos || [];
+                    const freshProjects = projectsData.projects || [];
+                    const freshPhotos = photosData.photos || [];
+                    const freshPayload = { projects: freshProjects, allPhotos: freshPhotos };
 
-                localStorage.setItem("MWAVULI_PORTFOLIO_CACHE", JSON.stringify({ projects, allPhotos }));
+                    // Incremental Hash Diff Check: update ONLY if payload actually changed!
+                    if (!window.SmartCacheManager || window.SmartCacheManager.hasChanged(cacheKey, freshPayload)) {
+                        const pDiff = window.SmartCacheManager
+                            ? window.SmartCacheManager.diffMerge(projects, freshProjects)
+                            : { merged: freshProjects, hasChanges: true };
+                        const phDiff = window.SmartCacheManager
+                            ? window.SmartCacheManager.diffMerge(allPhotos, freshPhotos)
+                            : { merged: freshPhotos, hasChanges: true };
 
-                const activeTarget = document.querySelector(".segment-btn.active")?.getAttribute("data-target");
-                if (activeTarget === "all") {
-                    renderAllPhotos();
-                } else {
-                    renderAlbums();
-                }
-            } catch (err) {
-                console.error("Failed to load portfolio data", err);
-                if (!hasCachedRender) {
-                    container.innerHTML = "<p class='gallery-empty' style='text-align:center;'>Could not load portfolio photos.</p>";
+                        if (pDiff.hasChanges || phDiff.hasChanges || !hasCachedRender) {
+                            projects = pDiff.merged;
+                            allPhotos = phDiff.merged;
+                            if (window.SmartCacheManager) {
+                                window.SmartCacheManager.saveCache(cacheKey, { projects, allPhotos });
+                            } else {
+                                localStorage.setItem(cacheKey, JSON.stringify({ data: { projects, allPhotos } }));
+                            }
+
+                            // Perform targeted DOM update only when necessary
+                            const activeTarget = document.querySelector(".segment-btn.active")?.getAttribute("data-target");
+                            if (activeTarget === "all") {
+                                renderAllPhotos();
+                            } else {
+                                renderAlbums();
+                            }
+                        }
+                    }
+                } catch (err) {
+                    console.error("Failed to load portfolio data", err);
+                    if (!hasCachedRender) {
+                        container.innerHTML = "<p class='gallery-empty' style='text-align:center;'>Could not load portfolio photos.</p>";
+                    }
                 }
             }
+
+            syncFromAPI();
+
+            // Real-time Cross-Tab Storage Sync
+            window.addEventListener("storage", (e) => {
+                if (e.key === cacheKey && e.newValue) {
+                    try {
+                        const parsed = JSON.parse(e.newValue);
+                        if (parsed && parsed.data) {
+                            projects = parsed.data.projects || [];
+                            allPhotos = parsed.data.allPhotos || [];
+                            renderAlbums();
+                        }
+                    } catch (_) {}
+                }
+            });
+
+            // Refresh background cache on tab visibility regain
+            document.addEventListener("visibilitychange", () => {
+                if (document.visibilityState === "visible") syncFromAPI();
+            });
         }
 
         function renderAlbums() {

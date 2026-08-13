@@ -47,13 +47,18 @@ function shuffle(arr) {
 
 if (projectCollectionsEl || generalGallery) {
     async function loadGallery() {
-        const cachedData = localStorage.getItem("MWAVULI_GALLERY_CACHE");
+        const cacheKey = "MWAVULI_GALLERY_CACHE_V2";
+        const cachedEntry = window.SmartCacheManager ? window.SmartCacheManager.getCache(cacheKey) : null;
         let hasCachedRender = false;
+        let currentProjects = [];
+        let currentPhotos = [];
 
-        if (cachedData) {
+        if (cachedEntry && cachedEntry.data) {
             try {
-                const { projects, allPhotos } = JSON.parse(cachedData);
+                const { projects, allPhotos } = cachedEntry.data;
                 if (projects && allPhotos) {
+                    currentProjects = projects;
+                    currentPhotos = allPhotos;
                     const generalPhotos = allPhotos.filter(p => !p.project);
                     const projectPhotos = allPhotos.filter(p => p.project);
                     const combined = shuffle([...generalPhotos, ...projectPhotos]);
@@ -68,37 +73,75 @@ if (projectCollectionsEl || generalGallery) {
             showSkeleton();
         }
 
-        try {
-            const [projectsRes, photosRes] = await Promise.all([
-                fetch(`${API}/api/projects`),
-                fetch(`${API}/api/photos`)
-            ]);
+        async function syncGalleryFromAPI() {
+            try {
+                const [projectsRes, photosRes] = await Promise.all([
+                    fetch(`${API}/api/projects`),
+                    fetch(`${API}/api/photos`)
+                ]);
 
-            const projectsData = await projectsRes.json();
-            const photosData = await photosRes.json();
+                const projectsData = await projectsRes.json();
+                const photosData = await photosRes.json();
 
-            const projects = projectsData.projects || [];
-            const allPhotos = photosData.photos || [];
+                const freshProjects = projectsData.projects || [];
+                const freshPhotos = photosData.photos || [];
+                const freshPayload = { projects: freshProjects, allPhotos: freshPhotos };
 
-            localStorage.setItem("MWAVULI_GALLERY_CACHE", JSON.stringify({ projects, allPhotos }));
+                if (!window.SmartCacheManager || window.SmartCacheManager.hasChanged(cacheKey, freshPayload)) {
+                    const pDiff = window.SmartCacheManager
+                        ? window.SmartCacheManager.diffMerge(currentProjects, freshProjects)
+                        : { merged: freshProjects, hasChanges: true };
+                    const phDiff = window.SmartCacheManager
+                        ? window.SmartCacheManager.diffMerge(currentPhotos, freshPhotos)
+                        : { merged: freshPhotos, hasChanges: true };
 
-            const generalPhotos = allPhotos.filter(p => !p.project);
-            const projectPhotos = allPhotos.filter(p => p.project);
-            const combined = shuffle([...generalPhotos, ...projectPhotos]);
+                    if (pDiff.hasChanges || phDiff.hasChanges || !hasCachedRender) {
+                        currentProjects = pDiff.merged;
+                        currentPhotos = phDiff.merged;
+                        if (window.SmartCacheManager) {
+                            window.SmartCacheManager.saveCache(cacheKey, { projects: currentProjects, allPhotos: currentPhotos });
+                        }
 
-            if (projectCollectionsEl) renderProjectCollections(projects);
-            if (generalGallery) renderGeneralGallery(combined);
-        } catch (err) {
-            console.error("Failed to load gallery", err);
-            if (!hasCachedRender) {
-                if (projectCollectionsEl) {
-                    projectCollectionsEl.innerHTML = "<p class='gallery-empty'>Could not load collections.</p>";
+                        const generalPhotos = currentPhotos.filter(p => !p.project);
+                        const projectPhotos = currentPhotos.filter(p => p.project);
+                        const combined = shuffle([...generalPhotos, ...projectPhotos]);
+
+                        if (projectCollectionsEl) renderProjectCollections(currentProjects);
+                        if (generalGallery) renderGeneralGallery(combined);
+                    }
                 }
-                if (generalGallery) {
-                    generalGallery.innerHTML = "<p class='gallery-empty'>Could not load gallery.</p>";
+            } catch (err) {
+                console.error("Failed to load gallery", err);
+                if (!hasCachedRender) {
+                    if (projectCollectionsEl) {
+                        projectCollectionsEl.innerHTML = "<p class='gallery-empty'>Could not load collections.</p>";
+                    }
+                    if (generalGallery) {
+                        generalGallery.innerHTML = "<p class='gallery-empty'>Could not load gallery.</p>";
+                    }
                 }
             }
         }
+
+        syncGalleryFromAPI();
+
+        // Real-time Storage Sync for gallery page
+        window.addEventListener("storage", (e) => {
+            if (e.key === cacheKey && e.newValue) {
+                try {
+                    const parsed = JSON.parse(e.newValue);
+                    if (parsed && parsed.data) {
+                        currentProjects = parsed.data.projects || [];
+                        currentPhotos = parsed.data.allPhotos || [];
+                        const generalPhotos = currentPhotos.filter(p => !p.project);
+                        const projectPhotos = currentPhotos.filter(p => p.project);
+                        const combined = shuffle([...generalPhotos, ...projectPhotos]);
+                        if (projectCollectionsEl) renderProjectCollections(currentProjects);
+                        if (generalGallery) renderGeneralGallery(combined);
+                    }
+                } catch (_) {}
+            }
+        });
     }
 
     function renderProjectCollections(projects) {
