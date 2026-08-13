@@ -54,21 +54,22 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Tangible, Comforting Warm Ambient Aurora Glow */
+/* Tangible, Comforting Vibrant Ambient Aurora Glow */
 body::before {
     content: "";
     position: fixed;
     top: -12%;
     left: -8%;
-    width: 65vw;
-    height: 65vw;
-    max-width: 950px;
-    max-height: 950px;
-    background: radial-gradient(circle, rgba(251, 207, 232, 0.38) 0%, rgba(221, 214, 254, 0.28) 45%, rgba(253, 230, 138, 0.18) 70%, transparent 85%);
-    filter: blur(85px);
+    width: 70vw;
+    height: 70vw;
+    max-width: 1050px;
+    max-height: 1050px;
+    background: radial-gradient(circle, rgba(251, 207, 232, 0.65) 0%, rgba(221, 214, 254, 0.50) 45%, rgba(253, 230, 138, 0.38) 70%, transparent 85%);
+    filter: blur(80px);
     z-index: -2;
     pointer-events: none;
     animation: auroraFloat1 20s ease-in-out infinite alternate;
+    opacity: 0.9;
 }
 
 body::after {
@@ -76,15 +77,16 @@ body::after {
     position: fixed;
     bottom: -8%;
     right: -8%;
-    width: 70vw;
-    height: 70vw;
-    max-width: 1050px;
-    max-height: 1050px;
-    background: radial-gradient(circle, rgba(253, 230, 138, 0.32) 0%, rgba(251, 207, 232, 0.3) 40%, rgba(221, 214, 254, 0.2) 68%, transparent 85%);
-    filter: blur(95px);
+    width: 75vw;
+    height: 75vw;
+    max-width: 1150px;
+    max-height: 1150px;
+    background: radial-gradient(circle, rgba(253, 230, 138, 0.60) 0%, rgba(251, 207, 232, 0.55) 40%, rgba(221, 214, 254, 0.40) 68%, transparent 85%);
+    filter: blur(90px);
     z-index: -2;
     pointer-events: none;
     animation: auroraFloat2 24s ease-in-out infinite alternate;
+    opacity: 0.9;
 }
 
 @keyframes auroraFloat1 {
