@@ -698,6 +698,36 @@ nav {
     transform: scale(1.08);
 }
 
+.lightbox-audio-btn {
+    position: absolute;
+    top: 24px;
+    right: 84px;
+    font-size: 18px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s var(--ease), transform 0.2s var(--ease);
+    z-index: 2010;
+}
+
+.lightbox-audio-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.08);
+}
+
+.lightbox-audio-btn:active {
+    transform: scale(0.94);
+}
+
 .lightbox-nav {
     position: absolute;
     top: 50%;
@@ -1265,6 +1295,19 @@ footer {
 
 /* Responsive Breakpoints & Mobile Touch Scaling */
 @media (max-width: 900px) {
+    .lightbox-prev,
+    .lightbox-next {
+        display: none !important;
+    }
+
+    .lightbox-audio-btn {
+        top: 18px;
+        right: 72px;
+        width: 42px;
+        height: 42px;
+        font-size: 16px;
+    }
+
     header {
         padding: 20px 4%;
     }

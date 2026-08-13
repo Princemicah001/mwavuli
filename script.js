@@ -821,6 +821,8 @@
         const closeBtn = document.getElementById("lightboxClose");
         const prevBtn = document.getElementById("lightboxPrev");
         const nextBtn = document.getElementById("lightboxNext");
+        const audioToggleBtn = document.getElementById("lightboxAudioToggle");
+        const audioToggleIcon = document.getElementById("audioToggleIcon");
         if (!lightbox) return;
 
         let sources = [];
@@ -863,6 +865,11 @@
             document.body.style.overflow = "hidden";
         };
 
+        function updateAudioIcon() {
+            if (!audioToggleIcon || !lightboxVideo) return;
+            audioToggleIcon.className = lightboxVideo.muted ? "fa-solid fa-volume-xmark" : "fa-solid fa-volume-high";
+        }
+
         function showCurrent() {
             if (!sources.length) return;
             const currentItem = sources[currentIndex];
@@ -872,18 +879,25 @@
                 if (lightboxImg) lightboxImg.style.display = "none";
                 if (lightboxVideo) {
                     lightboxVideo.style.display = "block";
+                    lightboxVideo.loop = true;
+                    lightboxVideo.removeAttribute("controls");
                     const fastUrl = cldUrl(url, "q_auto,f_auto,w_1200");
                     if (lightboxVideo.src !== fastUrl) {
                         lightboxVideo.src = fastUrl;
                     }
                     lightboxVideo.muted = false;
                     lightboxVideo.volume = 1.0;
+                    if (audioToggleBtn) audioToggleBtn.style.display = "flex";
+                    updateAudioIcon();
+
                     const p = lightboxVideo.play();
                     if (p !== undefined) {
                         p.catch(() => {
                             lightboxVideo.muted = true;
+                            updateAudioIcon();
                             lightboxVideo.play().then(() => {
                                 lightboxVideo.muted = false;
+                                updateAudioIcon();
                             }).catch(() => {});
                         });
                     }
@@ -894,6 +908,7 @@
                     lightboxVideo.src = "";
                     lightboxVideo.style.display = "none";
                 }
+                if (audioToggleBtn) audioToggleBtn.style.display = "none";
                 if (lightboxImg) {
                     lightboxImg.style.display = "block";
                     lightboxImg.src = url;
@@ -904,6 +919,14 @@
             const prevIdx = (currentIndex - 1 + sources.length) % sources.length;
             preload(sources[nextIdx]);
             preload(sources[prevIdx]);
+        }
+
+        if (audioToggleBtn && lightboxVideo) {
+            audioToggleBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                lightboxVideo.muted = !lightboxVideo.muted;
+                updateAudioIcon();
+            });
         }
 
         function close() {
@@ -926,6 +949,30 @@
             currentIndex = (currentIndex + 1) % sources.length;
             showCurrent();
         });
+
+        // Touch Swipe Navigation for mobile devices
+        let touchStartX = 0;
+        let touchEndX = 0;
+        lightbox.addEventListener("touchstart", (e) => {
+            if (e.touches && e.touches.length === 1) {
+                touchStartX = e.touches[0].clientX;
+            }
+        }, { passive: true });
+
+        lightbox.addEventListener("touchend", (e) => {
+            if (e.changedTouches && e.changedTouches.length === 1) {
+                touchEndX = e.changedTouches[0].clientX;
+                const diff = touchEndX - touchStartX;
+                if (Math.abs(diff) > 40) {
+                    if (diff < 0) {
+                        currentIndex = (currentIndex + 1) % sources.length;
+                    } else {
+                        currentIndex = (currentIndex - 1 + sources.length) % sources.length;
+                    }
+                    showCurrent();
+                }
+            }
+        }, { passive: true });
 
         document.addEventListener("keydown", (e) => {
             if (!lightbox.classList.contains("active")) return;
