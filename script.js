@@ -15,7 +15,11 @@
     // auto-format/auto-quality derivative on the fly (no re-upload needed).
     function cldUrl(url, t) {
         if (!url || !/^https?:\/\/res\.cloudinary\.com\//.test(url)) return url;
-        return url.replace(/\/upload\/[^/]+/, `/upload/${t}`);
+        let target = t;
+        if (typeof window !== "undefined" && window.innerWidth < 600) {
+            target = target.replace(/w_\d+/, "w_550").replace(/q_auto/, "q_auto:eco");
+        }
+        return url.replace(/\/upload\/[^/]+/, `/upload/${target}`);
     }
     console.debug('[booking] API base =', JSON.stringify(API));
 

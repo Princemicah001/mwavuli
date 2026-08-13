@@ -92,15 +92,17 @@
         </div>
     </footer>
 
-    <script src="cache-sync.js?v=101"></script>
-    <script src="script.js?v=101" defer></script>
-    <script src="projects.js?v=101" defer></script>
+    <script src="cache-sync.js?v=102"></script>
+    <script src="script.js?v=102" defer></script>
+    <script src="projects.js?v=102" defer></script>
     <script>
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
-                navigator.serviceWorker.register("/sw.js?v=101").then((reg) => {
-                    reg.update();
-                }).catch(() => { });
+                setTimeout(() => {
+                    navigator.serviceWorker.register("/sw.js?v=102").then((reg) => {
+                        reg.update();
+                    }).catch(() => { });
+                }, 500);
             });
         }
     </script>
