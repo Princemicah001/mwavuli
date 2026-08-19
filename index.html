@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MWAVULI PHOTOGRAPHY | Minimal Portfolio</title>
+    <title>MWAVULI PHOTOGRAPHY & VIDEOGRAPHY | Fine-Art Photography & Cinema</title>
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#F7F7F9">
@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Syne:wght@600;700;800&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Syne:wght@600;700;800&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="style.css?v=102">
+    <link rel="stylesheet" href="style.css?v=103">
 </head>
 
 <body>
@@ -23,7 +23,7 @@
     <header>
         <nav>
             <div class="logo" onclick="window.location.href='#home'">
-                <img src="assets/images/logo/logo.png" alt="Mwavuli Photography">
+                <img src="assets/images/logo/logo.png" alt="Mwavuli Photography & Videography">
             </div>
 
             <ul class="nav-links">
@@ -32,6 +32,7 @@
                 <li><a href="#portfolio">Portfolio</a></li>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li><button class="nav-book-btn" id="openBookingModalNav">Book Session</button></li>
             </ul>
 
             <button class="nav-toggle" id="navToggle" aria-label="Toggle Menu">
@@ -50,6 +51,7 @@
                 <li><a href="#portfolio">Portfolio</a></li>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#contact">Contact</a></li>
+                <li><button class="nav-book-btn" id="openBookingModalSidebar" style="width:100%; margin-top:12px;">Book Session</button></li>
             </ul>
         </div>
     </div>
@@ -68,9 +70,8 @@
     <!-- 3D CAROUSEL HERO SECTION -->
     <section id="home" class="hero reveal">
         <div class="hero-text">
-            <h1>Capturing pure <span class="highlight-handwritten brush-wrap">emotion</span><br>behind every moment</h1>
-            <p>We weave authentic connection, natural light, and subtle elegance into timeless visual stories. Every
-                frame is crafted to celebrate who you truly are effortless, unscripted, and breathtakingly real.</p>
+            <h1>Unfiltered Cinema <span class="highlight-handwritten brush-wrap">& Still Art</span><br>crafted for real moments</h1>
+            <p>We document raw emotion, ambient light, and natural movement across photography and video. From quiet personal stories to grand celebrations, every project is crafted with artistic clarity—unscripted and undeniably real.</p>
         </div>
 
         <div class="carousel-3d-container">
@@ -92,7 +93,7 @@
             <div class="segmented-control" id="segmentedControl">
                 <div class="segment-indicator" id="segmentIndicator"></div>
                 <button class="segment-btn active" data-target="albums">Albums</button>
-                <button class="segment-btn" data-target="photos">All Photos</button>
+                <button class="segment-btn" data-target="photos">All Media</button>
             </div>
         </div>
 
@@ -106,36 +107,33 @@
         <div class="about-container">
             <div class="about-image-wrap" id="aboutImageContainer">
                 <img id="aboutImage" src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=800&q=80"
-                    alt="Mwavuli Photographer" loading="eager" decoding="async" fetchpriority="high">
+                    alt="Mwavuli Photography & Videography" loading="eager" decoding="async" fetchpriority="high">
                 <div class="about-badge">
                     <span class="badge-number">7+</span>
-                    <span class="badge-text">Years of Excellence</span>
+                    <span class="badge-text">Years of Craft</span>
                 </div>
             </div>
             <div class="about-content">
-                <span class="about-tag">THE ARTIST BEHIND THE LENS</span>
-                <h2>Capturing Timeless Moments & Authentic Expressions</h2>
-                <p id="aboutBioText">At Mwavuli Photography, we believe every frame tells an unscripted story. Founded
-                    on a passion for natural light and candid visual storytelling, our approach turns fleeting emotions
-                    into enduring works of art. Whether it's the quiet romance of an elopement or the vibrant energy of
-                    a celebration, we match your unique personality with artistic precision.</p>
+                <span class="about-tag">PHOTOGRAPHY & CINEMATOGRAPHY</span>
+                <h2>Crafting Visual Stories in Stills & Motion</h2>
+                <p id="aboutBioText">At Mwavuli Photography & Videography, we focus on genuine observation and cinematic storytelling. We turn fleeting emotions into lasting visual art—blending fine-art photography with dynamic film production for weddings, portraits, and major events.</p>
 
                 <div class="about-stats">
                     <div class="stat-card">
                         <h3>350+</h3>
-                        <p>Shoots Completed</p>
+                        <p>Shoots & Films</p>
                     </div>
                     <div class="stat-card">
                         <h3>100%</h3>
-                        <p>Happy Clients</p>
+                        <p>Client Satisfaction</p>
                     </div>
                     <div class="stat-card">
                         <h3>15+</h3>
-                        <p>Awards & Features</p>
+                        <p>Features & Honors</p>
                     </div>
                 </div>
 
-                <a href="#contact" class="btn-about-cta">Work With Us <i class="fa-solid fa-arrow-right"></i></a>
+                <button class="btn-about-cta" id="aboutCtaBtn">Book Your Session <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
     </section>
@@ -143,66 +141,97 @@
     <!-- SERVICES SECTION -->
     <section id="services" class="services-section reveal">
         <div class="section-head">
-            <h2>Our Photography Services</h2>
-            <p>Tailored photography packages for every milestone.</p>
+            <h2>Photography & Cinema Services</h2>
+            <p>Tailored visual packages for weddings, editorial portraits, and corporate films.</p>
         </div>
         <div class="services-grid">
             <div class="service-box">
                 <div class="service-icon"><i class="fa-solid fa-ring"></i></div>
                 <h3>Weddings & Elopements</h3>
-                <p>Full day wedding coverage capturing authentic emotions and timeless romance.</p>
+                <p>Full-day wedding photography and cinematic highlight films capturing genuine romance and unscripted joy.</p>
             </div>
             <div class="service-box">
-                <div class="service-icon"><i class="fa-solid fa-graduation-cap"></i></div>
-                <h3>Graduations</h3>
-                <p>Celebrate academic milestones with creative individual and family portraits.</p>
+                <div class="service-icon"><i class="fa-solid fa-film"></i></div>
+                <h3>Cinematic Videography</h3>
+                <p>High-definition film production, commercial spots, event recap reels, and documentary-style storytelling.</p>
             </div>
             <div class="service-box">
                 <div class="service-icon"><i class="fa-solid fa-camera"></i></div>
-                <h3>Studio Portraits</h3>
-                <p>Professional headshots, fashion editorials, and executive branding sessions.</p>
+                <h3>Studio & Editorial Portraits</h3>
+                <p>Creative editorial portraiture, professional executive headshots, and fashion lookbooks.</p>
+            </div>
+            <div class="service-box">
+                <div class="service-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                <h3>Graduations & Milestones</h3>
+                <p>Commemorate academic achievements with expressive individual and family portrait sessions.</p>
             </div>
             <div class="service-box">
                 <div class="service-icon"><i class="fa-solid fa-calendar-days"></i></div>
-                <h3>Events & Galas</h3>
-                <p>High-end event photography with instant media asset delivery.</p>
+                <h3>Corporate Events & Galas</h3>
+                <p>Comprehensive photo and video coverage for corporate summits, galas, and brand launches.</p>
             </div>
         </div>
     </section>
 
-    <!-- CONTACT SECTION -->
-    <section id="contact" class="contact-section reveal">
-        <div class="section-head">
-            <h2>Book Your Session</h2>
-            <p>Let's discuss your date, venue, and vision.</p>
-        </div>
-        <div class="contact-card">
-            <form id="contactForm" class="contact-form">
-                <input type="text" id="name" placeholder="Your Name" required>
-                <input type="email" id="email" placeholder="Your Email" required>
-                <input type="tel" id="phone" placeholder="Phone Number" required>
-                <select id="service" required>
-                    <option value="">Select Photography Service</option>
-                    <option value="Wedding">Wedding & Elopement</option>
-                    <option value="Portrait">Studio Portrait</option>
-                    <option value="Graduation">Graduation</option>
-                    <option value="Event">Corporate Event</option>
-                </select>
-                <input type="text" id="date" placeholder="Preferred Date (e.g. 2026-09-15)" required>
-                <textarea id="message" rows="4" placeholder="Tell us about your event details..."></textarea>
-                <button type="submit" class="submit-btn">Send Booking Request</button>
-                <p id="bookingMessage" style="text-align: center; margin-top: 10px;"></p>
+    <!-- BOOKING DIALOGUE POPUP MODAL (Pops up after services section or on button click) -->
+    <div class="booking-modal-overlay" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
+        <div class="booking-modal-card">
+            <button class="booking-modal-close" id="bookingModalClose" aria-label="Close booking dialogue">&times;</button>
+            <div class="booking-modal-header">
+                <span class="booking-modal-eyebrow">READY TO CAPTURE YOUR VISION?</span>
+                <h2 id="bookingModalTitle">Book Your Photography & Film Session</h2>
+                <p>Select your service, share your date, and we'll craft a custom package for you.</p>
+            </div>
+            
+            <form id="popupBookingForm" class="booking-modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="popupName">Your Name</label>
+                        <input type="text" id="popupName" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="popupPhone">Phone / WhatsApp</label>
+                        <input type="tel" id="popupPhone" placeholder="+254 7..." required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="popupEmail">Email Address</label>
+                        <input type="email" id="popupEmail" placeholder="name@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="popupDate">Preferred Date</label>
+                        <input type="text" id="popupDate" placeholder="YYYY-MM-DD" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Service Package</label>
+                    <div class="service-chips" id="serviceChips">
+                        <button type="button" class="chip active" data-value="Photography & Videography (Hybrid)">Photo & Film</button>
+                        <button type="button" class="chip" data-value="Wedding & Elopement">Wedding & Elopement</button>
+                        <button type="button" class="chip" data-value="Cinematic Videography">Cinematic Videography</button>
+                        <button type="button" class="chip" data-value="Studio Portrait">Studio Portrait</button>
+                        <button type="button" class="chip" data-value="Graduation">Graduation</button>
+                        <button type="button" class="chip" data-value="Corporate Event">Event & Gala</button>
+                    </div>
+                    <input type="hidden" id="popupServiceValue" value="Photography & Videography (Hybrid)">
+                </div>
+
+                <div class="form-group">
+                    <label for="popupMessage">Project Details & Vision</label>
+                    <textarea id="popupMessage" rows="3" placeholder="Tell us about your venue, location, or ideas..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn-modal-submit"><i class="fa-solid fa-paper-plane"></i> Send Booking Request</button>
+                    <a href="https://wa.me/254769578232?text=Hello%20Mwavuli%20Studios%2C%20I'd%20like%20to%20book%20a%20photography%20%26%20videography%20session!" target="_blank" rel="noopener noreferrer" class="btn-modal-whatsapp"><i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp</a>
+                </div>
+                <p id="popupBookingStatus" class="booking-status-text"></p>
             </form>
         </div>
-    </section>
-
-    <!-- FLOATING WHATSAPP FAB -->
-    <a href="https://wa.me/254769578232?text=Hello%20Mwavuli%20Photography%2C%20I%20would%20like%20to%20book%20a%20photography%20session!"
-        target="_blank" rel="noopener noreferrer" class="book-now-fab whatsapp-fab" id="bookNowFab"
-        aria-label="Book on WhatsApp">
-        <i class="fa-brands fa-whatsapp"></i>
-        <span>Book</span>
-    </a>
+    </div>
 
     <!-- LIGHTBOX -->
     <div class="lightbox" id="lightbox">
@@ -216,18 +245,20 @@
         <button class="lightbox-nav lightbox-next" id="lightboxNext"><i class="fa-solid fa-chevron-right"></i></button>
     </div>
 
-    <footer>
-        <p>&copy; 2026 MWAVULI PHOTOGRAPHY. All rights reserved.</p>
-    </footer>
+    <!-- FIXED WHATSAPP FAB BUTTON (BOTTOM RIGHT) -->
+    <a href="https://wa.me/254769578232?text=Hello%20Mwavuli%20Studios%2C%20I'd%20like%20to%20inquire%20about%20your%20photography%20%26%20videography%20services!" target="_blank" rel="noopener noreferrer" class="whatsapp-fab" aria-label="Chat on WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+        <span class="whatsapp-fab-tooltip">Chat with us</span>
+    </a>
 
-    <script src="cache-sync.js?v=102"></script>
-    <script src="script.js?v=102"></script>
-    <script src="gallery.js?v=102"></script>
+    <script src="cache-sync.js?v=108"></script>
+    <script src="script.js?v=108"></script>
+    <script src="gallery.js?v=108"></script>
     <script>
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {
                 setTimeout(() => {
-                    navigator.serviceWorker.register("/sw.js?v=102").then((reg) => {
+                    navigator.serviceWorker.register("/sw.js?v=108").then((reg) => {
                         reg.update();
                     }).catch(() => { });
                 }, 500);

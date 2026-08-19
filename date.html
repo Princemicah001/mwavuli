@@ -1,314 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Professional Mini Calendar Picker</title>
-  <style>
-    /* Reset & Core Styling */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <title>Typography Style Representation</title>
+    <!-- Importing a premium editorial serif style font for demonstration -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    
+    <style>
+        .photography-container {
+            /* Simulates the subtle horizontal gradient background from the source image */
+            background: linear-gradient(90deg, #fff7ed 0%, #faeef0 100%);
+            padding: 40px;
+            display: inline-block;
+            border-radius: 4px;
+        }
 
-    body {
-      background-color: #f8fafc;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    /* Wrap container to mimic a real form field layout */
-    .datepicker-container {
-      position: relative;
-      width: 100%;
-      max-width: 320px;
-    }
-
-    /* Native input field styled cleanly */
-    .custom-date-input {
-      width: 100%;
-      padding: 12px 16px;
-      font-size: 15px;
-      color: #1e293b;
-      background-color: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      outline: none;
-      cursor: pointer;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .custom-date-input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
-
-    /* Mini Calendar Card Dropdown */
-    .mini-calendar {
-      position: absolute;
-      top: calc(100% + 8px);
-      left: 0;
-      width: 100%;
-      background-color: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.02);
-      padding: 16px;
-      z-index: 10;
-      display: none; /* Controlled via JS toggles */
-    }
-
-    .mini-calendar.active {
-      display: block;
-    }
-
-    /* Calendar Header */
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .current-month-year {
-      font-size: 14px;
-      font-weight: 600;
-      color: #1e293b;
-    }
-
-    .nav-btn {
-      background: none;
-      border: none;
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      cursor: pointer;
-      color: #64748b;
-      transition: background-color 0.2s, color 0.2s;
-    }
-
-    .nav-btn:hover {
-      background-color: #f1f5f9;
-      color: #0f172a;
-    }
-
-    /* Weekdays Grid */
-    .calendar-weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      text-align: center;
-      margin-bottom: 6px;
-    }
-
-    .weekday {
-      font-size: 11px;
-      font-weight: 500;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* Days Grid Layout */
-    .calendar-days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      row-gap: 4px;
-    }
-
-    .day {
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      color: #334155;
-      border-radius: 6px;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.15s, color 0.15s;
-    }
-
-    .day:hover:not(.empty):not(.selected) {
-      background-color: #f1f5f9;
-      color: #0f172a;
-    }
-
-    /* Day State Modifiers */
-    .day.empty {
-      cursor: default;
-    }
-
-    .day.today {
-      font-weight: 700;
-      color: #2563eb;
-      position: relative;
-    }
-
-    /* Subtle indicator dot for current real-world day */
-    .day.today::after {
-      content: '';
-      position: absolute;
-      bottom: 4px;
-      width: 4px;
-      height: 4px;
-      background-color: #2563eb;
-      border-radius: 50%;
-    }
-
-    .day.selected {
-      background-color: #2563eb;
-      color: #ffffff;
-      font-weight: 600;
-    }
-
-    .day.selected::after {
-      background-color: #ffffff; /* Turns today indicator white if selected */
-    }
-  </style>
+        .photography-text {
+            /* Applied font style based on visual characteristics */
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-weight: 400;
+            font-size: 48px;
+            letter-spacing: -0.03em;
+            
+            /* Extracted golden-yellow hex color value */
+            color: #E29C35;
+            
+            margin: 0;
+            line-height: 1.1;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="datepicker-container">
-    <!-- Clean native input anchor -->
-    <input 
-      type="text" 
-      id="date" 
-      class="custom-date-input" 
-      placeholder="Select date" 
-      required 
-      readonly
-    >
-
-    <!-- Mini Calendar UI Component -->
-    <div class="mini-calendar" id="miniCalendar">
-      <div class="calendar-header">
-        <button class="nav-btn" id="prevMonthBtn" aria-label="Previous Month">&larr;</button>
-        <span class="current-month-year" id="monthYearTitle">July 2026</span>
-        <button class="nav-btn" id="nextMonthBtn" aria-label="Next Month">&rarr;</button>
-      </div>
-
-      <div class="calendar-weekdays">
-        <div class="weekday">Su</div>
-        <div class="weekday">Mo</div>
-        <div class="weekday">Tu</div>
-        <div class="weekday">We</div>
-        <div class="weekday">Th</div>
-        <div class="weekday">Fr</div>
-        <div class="weekday">Sa</div>
-      </div>
-
-      <div class="calendar-days" id="calendarDaysGrid">
-        <!-- Rendered dynamically by script -->
-      </div>
+    <div class="photography-container">
+        <h1 class="photography-text">Photography</h1>
     </div>
-  </div>
 
-  <script>
-    // Configuration & State initialization
-    const dateInput = document.getElementById('date');
-    const miniCalendar = document.getElementById('miniCalendar');
-    const monthYearTitle = document.getElementById('monthYearTitle');
-    const calendarDaysGrid = document.getElementById('calendarDaysGrid');
-    const prevMonthBtn = document.getElementById('prevMonthBtn');
-    const nextMonthBtn = document.getElementById('nextMonthBtn');
-
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-
-    let displayDate = new Date(); // Tracks currently viewed month/year navigation state
-    let selectedDate = null;      // Tracks user's exact chosen date value
-    const realToday = new Date();  // Anchor point for current real-time day tracking
-
-    // Render logic to assemble the grid structure cleanly
-    function renderCalendar() {
-      const year = displayDate.getFullYear();
-      const month = displayDate.getMonth();
-
-      // Title header updates
-      monthYearTitle.textContent = `${monthNames[month]} ${year}`;
-
-      // Find calendar padding bounds
-      const firstDayIndex = new Date(year, month, 1).getDay();
-      const totalDays = new Date(year, month + 1, 0).getDate();
-
-      calendarDaysGrid.innerHTML = '';
-
-      // 1. Insert blank cells for padding previous month leftovers
-      for (let i = 0; i < firstDayIndex; i++) {
-        const emptyCell = document.createElement('div');
-        emptyCell.classList.add('day', 'empty');
-        calendarDaysGrid.appendChild(emptyCell);
-      }
-
-      // 2. Loop & populate active selectable days
-      for (let day = 1; day <= totalDays; day++) {
-        const dayCell = document.createElement('div');
-        dayCell.classList.add('day');
-        dayCell.textContent = day;
-
-        // Visual checks to label state modifiers accurately
-        const isToday = day === realToday.getDate() && month === realToday.getMonth() && year === realToday.getFullYear();
-        const isSelected = selectedDate && day === selectedDate.getDate() && month === selectedDate.getMonth() && year === selectedDate.getFullYear();
-
-        if (isToday) dayCell.classList.add('today');
-        if (isSelected) dayCell.classList.add('selected');
-
-        // Capture user selection actions
-        dayCell.addEventListener('click', () => {
-          selectedDate = new Date(year, month, day);
-          
-          // Format selected value to uniform standard (YYYY-MM-DD)
-          const formattedMonth = String(month + 1).padStart(2, '0');
-          const formattedDay = String(day).padStart(2, '0');
-          dateInput.value = `${year}-${formattedMonth}-${formattedDay}`;
-          
-          // Refresh layouts and close popover view
-          renderCalendar();
-          miniCalendar.classList.remove('active');
-        });
-
-        calendarDaysGrid.appendChild(dayCell);
-      }
-    }
-
-    // Toggle Dropdown Visibility Interactivity
-    dateInput.addEventListener('click', (e) => {
-      e.stopPropagation();
-      miniCalendar.classList.toggle('active');
-    });
-
-    // Close when picking outside the boundary container layout
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.datepicker-container')) {
-        miniCalendar.classList.remove('active');
-      }
-    });
-
-    // Pagination Click Events
-    prevMonthBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      displayDate.setMonth(displayDate.getMonth() - 1);
-      renderCalendar();
-    });
-
-    nextMonthBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      displayDate.setMonth(displayDate.getMonth() + 1);
-      renderCalendar();
-    });
-
-    // Run layout engine setup on mount
-    renderCalendar();
-  </script>
 </body>
 </html>

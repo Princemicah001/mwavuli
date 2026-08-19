@@ -545,7 +545,7 @@
 
         function startAutoplay() {
             stopAutoplay();
-            autoplayTimer = setInterval(next3D, 10000); // 10s strict uninterrupted interval
+            autoplayTimer = setInterval(next3D, 5000); // 5s shuffle interval
         }
 
         function stopAutoplay() {
@@ -608,6 +608,7 @@
                         dot.addEventListener("click", () => {
                             currentIndex = i;
                             update3DPositions();
+                            startAutoplay();
                         });
                     });
                 }
@@ -616,7 +617,15 @@
                     item.addEventListener("click", () => {
                         currentIndex = i;
                         update3DPositions();
+                        startAutoplay();
                     });
+                });
+
+                track.addEventListener("mouseenter", stopAutoplay);
+                track.addEventListener("mouseleave", startAutoplay);
+                track.addEventListener("touchstart", stopAutoplay, { passive: true });
+                track.addEventListener("touchend", () => {
+                    setTimeout(startAutoplay, 3000);
                 });
 
                 currentIndex = Math.floor(slidesData.length / 2);
@@ -627,8 +636,8 @@
             }
         }
 
-        if (prevBtn) prevBtn.addEventListener("click", () => { prev3D(); });
-        if (nextBtn) nextBtn.addEventListener("click", () => { next3D(); });
+        if (prevBtn) prevBtn.addEventListener("click", () => { prev3D(); startAutoplay(); });
+        if (nextBtn) nextBtn.addEventListener("click", () => { next3D(); startAutoplay(); });
 
         load3DItems();
     }
@@ -1038,12 +1047,18 @@
         lightbox.addEventListener("click", (e) => { if (e.target === lightbox) close(); });
     })();
 
-    // Floating WhatsApp FAB with Guaranteed Popup Audio Sound
-    function initBookNowFab() {
-        const fab = document.getElementById("bookNowFab");
-        const hero = document.getElementById("home");
-        if (!fab || !hero) return;
+    // Scroll-to-Bottom Booking Dialogue Popup Modal
+    function initBookingPopupModal() {
+        const modal = document.getElementById("bookingModal");
+        if (!modal) return;
 
+        const closeBtn = document.getElementById("bookingModalClose");
+        const popupForm = document.getElementById("popupBookingForm");
+        const statusText = document.getElementById("popupBookingStatus");
+        const serviceChips = document.querySelectorAll("#serviceChips .chip");
+        const hiddenServiceInput = document.getElementById("popupServiceValue");
+
+        let hasAutoPopped = false;
         let soundPlayed = false;
         const popupAudio = new Audio("assets/audio/popup.mp3");
         popupAudio.preload = "auto";
@@ -1061,7 +1076,6 @@
             return audioCtx;
         }
 
-        // Silent unlock listener on first user interaction
         function unlockAudioEngine() {
             const ctx = getAudioContext();
             if (ctx && ctx.state === 'suspended') {
@@ -1075,7 +1089,6 @@
         window.addEventListener("scroll", unlockAudioEngine, { once: true, passive: true });
 
         function playPop() {
-            // 1. Play Web Audio API pop sound (instant, 100% reliable)
             try {
                 const ctx = getAudioContext();
                 if (ctx) {
@@ -1083,38 +1096,180 @@
                     const gain = ctx.createGain();
 
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(320, ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12);
+                    osc.frequency.setValueAtTime(340, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(860, ctx.currentTime + 0.14);
 
-                    gain.gain.setValueAtTime(0.5, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+                    gain.gain.setValueAtTime(0.4, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.14);
 
                     osc.connect(gain);
                     gain.connect(ctx.destination);
 
                     osc.start(ctx.currentTime);
-                    osc.stop(ctx.currentTime + 0.12);
+                    osc.stop(ctx.currentTime + 0.14);
                 }
             } catch (e) {}
 
-            // 2. Play MP3 file
             try {
                 popupAudio.currentTime = 0;
                 popupAudio.play().catch(() => {});
             } catch (e) {}
         }
 
+        function openModal() {
+            modal.classList.add("active");
+            document.body.style.overflow = "hidden";
+            if (!soundPlayed) {
+                playPop();
+                soundPlayed = true;
+            }
+        }
+
+        function closeModal() {
+            modal.classList.remove("active");
+            document.body.style.overflow = "";
+        }
+
+        // Close on overlay backdrop click
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Close on ESC key press
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && modal.classList.contains("active")) {
+                closeModal();
+            }
+        });
+
+        // Ultra-smooth 60fps throttled scroll detection for services section
+        let scrollTicking = false;
         window.addEventListener("scroll", () => {
-            const threshold = hero.offsetHeight * 0.25;
-            if (window.scrollY > threshold) {
-                if (!fab.classList.contains("visible")) {
-                    fab.classList.add("visible");
-                    if (!soundPlayed) {
-                        playPop();
-                        soundPlayed = true;
+            if (window.scrollY < 300) {
+                hasAutoPopped = false; // Reset trigger state if user scrolls back to hero/top
+            }
+
+            if (!scrollTicking) {
+                window.requestAnimationFrame(() => {
+                    const servicesSection = document.getElementById("services");
+                    if (servicesSection) {
+                        const rect = servicesSection.getBoundingClientRect();
+                        if (rect.bottom <= window.innerHeight + 80 || (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 120)) {
+                            if (!hasAutoPopped && !modal.classList.contains("active")) {
+                                openModal();
+                                hasAutoPopped = true;
+                            }
+                        }
+                    } else {
+                        const scrollBottom = window.innerHeight + window.scrollY;
+                        const pageHeight = document.documentElement.scrollHeight;
+                        if (scrollBottom >= pageHeight - 180 && pageHeight > 600) {
+                            if (!hasAutoPopped && !modal.classList.contains("active")) {
+                                openModal();
+                                hasAutoPopped = true;
+                            }
+                        }
+                    }
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
+        }, { passive: true });
+
+        // Manual trigger buttons and contact navigation links
+        const triggerBtns = [
+            document.getElementById("openBookingModalNav"),
+            document.getElementById("openBookingModalSidebar"),
+            document.getElementById("aboutCtaBtn"),
+            ...document.querySelectorAll('a[href="#contact"]')
+        ];
+
+        triggerBtns.forEach(btn => {
+            if (btn) {
+                btn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    openModal();
+                });
+            }
+        });
+
+        // Service Chips interaction
+        if (serviceChips.length && hiddenServiceInput) {
+            serviceChips.forEach(chip => {
+                chip.addEventListener("click", () => {
+                    serviceChips.forEach(c => c.classList.remove("active"));
+                    chip.classList.add("active");
+                    const val = chip.getAttribute("data-value");
+                    hiddenServiceInput.value = val;
+                });
+            });
+        }
+
+        // Form Submission
+        if (popupForm) {
+            popupForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const submitBtn = popupForm.querySelector(".btn-modal-submit");
+                const originalText = submitBtn ? submitBtn.innerHTML : "Send Booking Request";
+
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+                }
+
+                const payload = {
+                    name: document.getElementById("popupName").value,
+                    email: document.getElementById("popupEmail").value,
+                    phone: document.getElementById("popupPhone").value,
+                    service: hiddenServiceInput ? hiddenServiceInput.value : "Photography & Videography (Hybrid)",
+                    date: document.getElementById("popupDate").value,
+                    message: document.getElementById("popupMessage").value
+                };
+
+                try {
+                    const res = await fetch(`${API}/api/messages`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        if (statusText) {
+                            statusText.style.color = "#16A34A";
+                            statusText.textContent = "Thank you! Your booking request was received. We'll contact you shortly.";
+                        }
+                        window.showToast("Booking request sent successfully!", "success");
+                        popupForm.reset();
+                        setTimeout(() => {
+                            closeModal();
+                            if (statusText) statusText.textContent = "";
+                        }, 2500);
+                    } else {
+                        if (statusText) {
+                            statusText.style.color = "#DC2626";
+                            statusText.textContent = data.message || "Failed to send request.";
+                        }
+                    }
+                } catch (err) {
+                    console.error("Popup booking error:", err);
+                    if (statusText) {
+                        statusText.style.color = "#DC2626";
+                        statusText.textContent = "Network error. Please try again.";
+                    }
+                } finally {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
                     }
                 }
-            }
+            });
+        }
+
+        if (closeBtn) closeBtn.addEventListener("click", closeModal);
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) closeModal();
         });
     }
 
@@ -1154,7 +1309,7 @@
             playAllVideosOnPage();
             init3DCoverFlow();
             initMinimalPortfolio();
-            initBookNowFab();
+            initBookingPopupModal();
             initScrollReveal();
         });
     } else {
@@ -1162,7 +1317,7 @@
         playAllVideosOnPage();
         init3DCoverFlow();
         initMinimalPortfolio();
-        initBookNowFab();
+        initBookingPopupModal();
         initScrollReveal();
     }
 

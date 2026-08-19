@@ -1,0 +1,14 @@
+{
+  "name": "mwavuli-photographer",
+  "version": "1.0.0",
+  "description": "Mwavuli Photography & Videography Studio",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "npm --prefix server start",
+    "dev": "npm --prefix server run dev",
+    "postinstall": "npm --prefix server install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

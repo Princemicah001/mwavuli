@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mwavuli-v102-fast';
+const CACHE_NAME = 'mwavuli-v108-fast';
 
 // Fast non-blocking install (0ms delay)
 self.addEventListener('install', (event) => {
